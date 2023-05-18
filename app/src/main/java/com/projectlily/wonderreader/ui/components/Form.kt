@@ -19,11 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class TextFieldState() {
     var question: String by mutableStateOf("")
@@ -99,5 +102,18 @@ private fun SendFormButton(onValidate: () -> Unit, modifier: Modifier = Modifier
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FormPreview(modifier: Modifier = Modifier) {
+    WonderReaderTheme {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.padding(bottom = 16.dp),
+        ) {
+            SendForm()
+        }
     }
 }

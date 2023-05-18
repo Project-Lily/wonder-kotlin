@@ -4,9 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,7 +77,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
-            .border(BorderStroke(4.dp, MaterialTheme.colorScheme.primary))
             .verticalScroll(rememberScrollState())
             .padding(vertical = 24.dp),
         color = MaterialTheme.colorScheme.background
@@ -106,6 +103,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun MainPreview() {
-    MainApp()
+fun HomePreview() {
+    HomeScreen()
 }
