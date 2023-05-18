@@ -22,10 +22,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.ui.components.BottomNavBar
-import com.projectlily.wonderreader.ui.components.Form
+import com.projectlily.wonderreader.ui.components.SendForm
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,24 +52,27 @@ fun Main(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
-            .border(BorderStroke(4.dp, MaterialTheme.colorScheme.primary)),
+            .border(BorderStroke(4.dp, MaterialTheme.colorScheme.primary))
+            .verticalScroll(rememberScrollState())
+            .padding(vertical = 24.dp),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 24.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.wonder_logo),
                 contentDescription = null,
                 modifier = Modifier.size(120.dp)
             )
-            Text("Wonder Reader", style = MaterialTheme.typography.headlineLarge)
+            Text(
+                text = "Wonder Reader",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
             Spacer(Modifier.height(56.dp))
-            Form(name = "Question", placeholder = "Insert Question")
-            Form(name = "Answer", placeholder = "Insert Answer")
+            SendForm()
         }
     }
 }
