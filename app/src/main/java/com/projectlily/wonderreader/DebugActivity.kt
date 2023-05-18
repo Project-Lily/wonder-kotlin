@@ -1,8 +1,5 @@
 package com.projectlily.wonderreader
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -23,32 +20,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.ui.components.BottomNavBar
-import com.projectlily.wonderreader.ui.components.SendForm
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MainApp()
-        }
-    }
-}
-
 @Composable
-fun MainApp() {
+fun DebugApp() {
     WonderReaderTheme {
         Scaffold(bottomBar = { BottomNavBar() }) { padding ->
-            MainScreen(Modifier.padding(padding))
+            DebugScreen(Modifier.padding(padding))
         }
     }
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun DebugScreen(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -66,19 +52,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.size(120.dp)
             )
             Text(
-                text = "Wonder Reader",
+                text = "Debug",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.height(56.dp))
-            SendForm()
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainPreview() {
-    MainApp()
 }
