@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Wonder Reader</string>
+    <string name="home">Home</string>
+    <string name="debug">Debug</string>
 </resources>

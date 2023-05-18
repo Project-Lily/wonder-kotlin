@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,17 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.projectlily.wonderreader.ui.components.BottomNavBar
-import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
-
-@Composable
-fun DebugApp() {
-    WonderReaderTheme {
-        Scaffold(bottomBar = { BottomNavBar() }) { padding ->
-            DebugScreen(Modifier.padding(padding))
-        }
-    }
-}
 
 @Composable
 fun DebugScreen(modifier: Modifier = Modifier) {
