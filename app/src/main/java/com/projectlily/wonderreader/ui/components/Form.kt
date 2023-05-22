@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 @Composable
-fun Form(
+private fun Form(
+    modifier: Modifier = Modifier,
     name: String,
     placeholder: String,
     value: String,
     onChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
-    modifier: Modifier = Modifier
 ) {
     Column(modifier.padding(top = 32.dp)) {
         Text(
@@ -56,9 +56,9 @@ fun Form(
 
 @Composable
 fun SendFormButton(
-    onValidate: () -> Unit,
+    modifier: Modifier = Modifier,
+            onValidate: () -> Unit,
     text: String = "Submit",
-    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onValidate,
@@ -77,7 +77,7 @@ fun SendFormButton(
 
 @Preview(showBackground = true)
 @Composable
-fun FormPreview(modifier: Modifier = Modifier) {
+private fun FormPreview(modifier: Modifier = Modifier) {
     WonderReaderTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

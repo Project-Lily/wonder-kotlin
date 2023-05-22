@@ -1,40 +1,28 @@
 package com.projectlily.wonderreader
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.ui.components.BottomNavBar
-import com.projectlily.wonderreader.ui.components.QnaForm
+import com.projectlily.wonderreader.ui.components.TopBar
+import com.projectlily.wonderreader.ui.screens.HomeScreen
+import com.projectlily.wonderreader.ui.screens.QnAScreen
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -48,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
     object Home : Screen("Home", R.string.home, Icons.Default.Home)
+    object QnA : Screen("QnA", R.string.qna, Icons.Default.QuestionAnswer)
     object Debug : Screen("Debug", R.string.debug, Icons.Default.Build)
 
     //    This shouldn't be on bottom bar, just here for testing
@@ -56,6 +45,7 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
 
 val items = listOf(
     Screen.Home,
+    Screen.QnA,
     Screen.Debug,
     Screen.Auth
 )
@@ -64,52 +54,23 @@ val items = listOf(
 fun MainApp() {
     WonderReaderTheme {
         val navController = rememberNavController()
-        Scaffold(bottomBar = { BottomNavBar(navController, items) }) { padding ->
-            HomeScreen(Modifier.padding(padding))
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination?.route
+
+        Scaffold(
+            topBar = { TopBar(text = currentDestination) },
+            bottomBar = { BottomNavBar(navController, items) }) { padding ->
             NavHost(
                 navController,
-                startDestination = Screen.Home.route,
+//              TODO: Change back to Home route
+                startDestination = Screen.QnA.route,
                 Modifier.padding(padding)
             ) {
                 composable(Screen.Home.route) { HomeScreen() }
+                composable(Screen.QnA.route) { QnAScreen() }
                 composable(Screen.Debug.route) { DebugScreen() }
                 composable(Screen.Auth.route) { AuthScreen() }
             }
         }
     }
-}
-
-@Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(vertical = 24.dp),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.wonder_logo),
-                contentDescription = null,
-                modifier = Modifier.size(120.dp)
-            )
-            Text(
-                text = "Wonder Reader",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(Modifier.height(56.dp))
-            QnaForm()
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomePreview() {
-    HomeScreen()
 }
