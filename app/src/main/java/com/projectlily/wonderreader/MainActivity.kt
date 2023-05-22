@@ -22,8 +22,10 @@ import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
+import com.projectlily.wonderreader.ui.screens.AddQnAScreen
 import com.projectlily.wonderreader.ui.screens.HomeScreen
 import com.projectlily.wonderreader.ui.screens.QnAScreen
+import com.projectlily.wonderreader.ui.screens.SendToDeviceScreen
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,21 +40,42 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(
     val route: String,
     @StringRes val resourceId: Int,
-    val icon: ImageVector,
+    val icon: ImageVector = Icons.Filled.Home,
     val action: String = "",
-    val actionButton: ImageVector = Icons.Filled.Send
+    val actionButton: ImageVector = Icons.Filled.Send,
+    val actionButtonDestination: String = ""
 ) {
-    object Home : Screen("Home", R.string.home, Icons.Default.Home, "Add QnA", Icons.Filled.Add)
+    object Home :
+        Screen(
+            "Home", R.string.home, Icons.Default.Home,
+            "Add QnA", Icons.Filled.Add, "Add QnA"
+        )
+
     object QnA :
-        Screen("QnA", R.string.qna, Icons.Default.QuestionAnswer, "Send", Icons.Filled.Send)
+        Screen(
+            "QnA", R.string.qna, Icons.Default.QuestionAnswer,
+            "Send", Icons.Filled.Send, "Send To Device"
+        )
 
     object Debug : Screen("Debug", R.string.debug, Icons.Default.Build)
 
     //    This shouldn't be on bottom bar, just here for testing
     object Auth : Screen("Auth", R.string.auth, Icons.Default.AccountBox)
+
+    object AddQnA : Screen("Add QnA", R.string.add_qna)
+    object SendToDevice : Screen("Send To Device", R.string.send_to_device)
 }
 
-val items = listOf(
+val screenItems = listOf(
+    Screen.Home,
+    Screen.QnA,
+    Screen.Debug,
+    Screen.Auth,
+    Screen.AddQnA,
+    Screen.SendToDevice
+)
+
+val navBarItems = listOf(
     Screen.Home,
     Screen.QnA,
     Screen.Debug,
@@ -66,8 +89,8 @@ fun MainApp() {
 
         Scaffold(
             topBar = { TopBar(navController) },
-            floatingActionButton = { ActionButton(navController, items) },
-            bottomBar = { BottomNavBar(navController, items) }) { padding ->
+            floatingActionButton = { ActionButton(navController, screenItems) },
+            bottomBar = { BottomNavBar(navController, navBarItems) }) { padding ->
             NavHost(
                 navController,
                 startDestination = Screen.Home.route,
@@ -77,6 +100,8 @@ fun MainApp() {
                 composable(Screen.QnA.route) { QnAScreen() }
                 composable(Screen.Debug.route) { DebugScreen() }
                 composable(Screen.Auth.route) { AuthScreen() }
+                composable(Screen.AddQnA.route) { AddQnAScreen() }
+                composable(Screen.SendToDevice.route) { SendToDeviceScreen() }
             }
         }
     }

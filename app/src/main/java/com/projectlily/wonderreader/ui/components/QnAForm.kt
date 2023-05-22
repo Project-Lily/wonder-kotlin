@@ -17,32 +17,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
-class QnaState() {
+class QnAState {
+    val options = listOf("Math", "Language", "Science", "Social Science")
+
+    var folder: String by mutableStateOf(options[0])
     var question: String by mutableStateOf("")
     var answer: String by mutableStateOf("")
 }
 
 @Composable
-fun QnaForm() {
-    val formState = remember { QnaState() }
+fun QnAForm() {
+    val formState = remember { QnAState() }
     val context = LocalContext.current
 
+    Dropdown(
+        options = formState.options,
+        selectedText = formState.folder,
+        onChange = { formState.folder = it }
+    )
     Form(
         name = "Question",
         placeholder = "Insert Question",
         value = formState.question,
-        onChange = { formState.question = it })
+        onChange = { formState.question = it }
+    )
     Form(
         name = "Answer",
         placeholder = "Insert Answer",
         value = formState.answer,
-        onChange = { formState.answer = it })
+        onChange = { formState.answer = it }
+    )
     Spacer(Modifier.height(24.dp))
     SendFormButton(
         onValidate = {
             Toast.makeText(
                 context,
-                "Question: ${formState.question}\nAnswer: ${formState.answer}",
+                "Folder: ${formState.folder}\nQuestion: ${formState.question} | Answer: ${formState.answer}",
                 Toast.LENGTH_SHORT
             ).show()
         })
@@ -50,13 +60,13 @@ fun QnaForm() {
 
 @Preview(showBackground = true)
 @Composable
-fun QnaPreview(modifier: Modifier = Modifier) {
+fun QnAPreview(modifier: Modifier = Modifier) {
     WonderReaderTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.padding(bottom = 16.dp),
         ) {
-            QnaForm()
+            QnAForm()
         }
     }
 }

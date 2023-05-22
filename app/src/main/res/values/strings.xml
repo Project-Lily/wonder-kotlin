@@ -6,4 +6,6 @@
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>
     <string name="auth">Auth</string>
+    <string name="add_qna">Add QnA</string>
+    <string name="send_to_device">Send To Device</string>
 </resources>

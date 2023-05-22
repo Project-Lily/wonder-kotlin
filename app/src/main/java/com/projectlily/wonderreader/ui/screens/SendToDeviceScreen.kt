@@ -5,16 +5,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.projectlily.wonderreader.SampleData
-import com.projectlily.wonderreader.ui.components.QnAList
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun SendToDeviceScreen(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -24,13 +22,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            QnAList(data = SampleData.QnASample)
+            Text("Lorem ipsum...")
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomePreview() {
-    HomeScreen()
 }

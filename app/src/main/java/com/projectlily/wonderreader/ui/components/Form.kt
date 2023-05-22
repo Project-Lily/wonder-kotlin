@@ -57,7 +57,7 @@ fun Form(
 @Composable
 fun SendFormButton(
     modifier: Modifier = Modifier,
-            onValidate: () -> Unit,
+    onValidate: () -> Unit,
     text: String = "Submit",
 ) {
     Button(
@@ -83,7 +83,7 @@ private fun FormPreview(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.padding(bottom = 16.dp),
         ) {
-            QnaForm()
+            QnAForm()
         }
     }
 }

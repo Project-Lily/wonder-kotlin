@@ -8,13 +8,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.projectlily.wonderreader.SampleData
-import com.projectlily.wonderreader.ui.components.QnAList
+import com.projectlily.wonderreader.ui.components.QnAForm
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun AddQnAScreen(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -24,13 +22,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            QnAList(data = SampleData.QnASample)
+            QnAForm()
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomePreview() {
-    HomeScreen()
 }

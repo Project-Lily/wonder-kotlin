@@ -18,14 +18,15 @@ fun ActionButton(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
-    val expanded = items.find { it.route == currentDestination }?.action != ""
+    val currentScreen = items.find { it.route == currentDestination }
+    val expanded = currentScreen?.action != ""
 
     if (expanded) {
         ExtendedFloatingActionButton(
-            onClick = { /*TODO*/ },
+            modifier = modifier,
             expanded = true,
             icon = {
-                items.find { it.route == currentDestination }?.let {
+                currentScreen?.let {
                     Icon(
                         imageVector = it.actionButton,
                         contentDescription = null
@@ -33,9 +34,21 @@ fun ActionButton(
                 }
             },
             text = {
-                items.find { it.route == currentDestination }?.let { Text(text = it.action) }
+                currentScreen?.let { Text(text = it.action) }
             },
-            modifier = modifier
+            onClick = {
+                currentScreen?.let {
+                    navController.navigate(it.actionButtonDestination) {
+                        // Navigate to the it.actionButtonDestination only if we’re not already on
+                        // the it.actionButtonDestination, avoiding multiple copies on the top of the
+                        // back stack
+                        launchSingleTop = true
+
+                        // Restore state when reselecting a previously selected item
+                        restoreState = true
+                    }
+                }
+            }
         )
     }
 }
