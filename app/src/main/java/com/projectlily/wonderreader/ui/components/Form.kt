@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 @Composable
-private fun Form(
+fun Form(
     modifier: Modifier = Modifier,
     name: String,
     placeholder: String,

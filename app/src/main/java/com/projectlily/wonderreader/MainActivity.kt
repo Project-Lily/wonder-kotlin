@@ -7,18 +7,19 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.QuestionAnswer
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
 import com.projectlily.wonderreader.ui.screens.HomeScreen
@@ -34,9 +35,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
-    object Home : Screen("Home", R.string.home, Icons.Default.Home)
-    object QnA : Screen("QnA", R.string.qna, Icons.Default.QuestionAnswer)
+sealed class Screen(
+    val route: String,
+    @StringRes val resourceId: Int,
+    val icon: ImageVector,
+    val action: String = "",
+    val actionButton: ImageVector = Icons.Filled.Send
+) {
+    object Home : Screen("Home", R.string.home, Icons.Default.Home, "Add QnA", Icons.Filled.Add)
+    object QnA :
+        Screen("QnA", R.string.qna, Icons.Default.QuestionAnswer, "Send", Icons.Filled.Send)
+
     object Debug : Screen("Debug", R.string.debug, Icons.Default.Build)
 
     //    This shouldn't be on bottom bar, just here for testing
@@ -54,16 +63,14 @@ val items = listOf(
 fun MainApp() {
     WonderReaderTheme {
         val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination?.route
 
         Scaffold(
-            topBar = { TopBar(text = currentDestination) },
+            topBar = { TopBar(navController) },
+            floatingActionButton = { ActionButton(navController, items) },
             bottomBar = { BottomNavBar(navController, items) }) { padding ->
             NavHost(
                 navController,
-//              TODO: Change back to Home route
-                startDestination = Screen.QnA.route,
+                startDestination = Screen.Home.route,
                 Modifier.padding(padding)
             ) {
                 composable(Screen.Home.route) { HomeScreen() }
