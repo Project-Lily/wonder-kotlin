@@ -20,9 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.projectlily.wonderreader.ui.components.Form
+import com.projectlily.wonderreader.ui.components.LoginForm
 
 @Composable
-fun DebugScreen(modifier: Modifier = Modifier) {
+fun AuthScreen(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -39,18 +41,19 @@ fun DebugScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.size(120.dp)
             )
             Text(
-                text = "Debug",
+                text = "Wonder Reader",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.height(56.dp))
+            LoginForm()
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DebugPreview() {
-    DebugScreen()
+fun AuthPreview() {
+    AuthScreen()
 }
