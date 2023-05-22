@@ -1,6 +1,6 @@
 package com.projectlily.wonderreader.ui.components
 
-import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class LoginState() {
@@ -44,6 +45,9 @@ fun LoginForm() {
     SendFormButton(
         text = "Login",
         onValidate = {
+            AuthService.login(formState.email, formState.password, onSuccess = {
+
+            })
             Toast.makeText(
                 context,
                 "Question: ${formState.email}\nAnswer: ${formState.password}",
