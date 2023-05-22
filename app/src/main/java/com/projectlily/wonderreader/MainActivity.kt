@@ -1,6 +1,7 @@
 package com.projectlily.wonderreader
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.ui.components.BottomNavBar
-import com.projectlily.wonderreader.ui.components.SendForm
+import com.projectlily.wonderreader.ui.components.QnaForm
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,11 +49,15 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
     object Home : Screen("Home", R.string.home, Icons.Default.Home)
     object Debug : Screen("Debug", R.string.debug, Icons.Default.Build)
+
+    //    This shouldn't be on bottom bar, just here for testing
+    object Auth : Screen("Auth", R.string.auth, Icons.Default.AccountBox)
 }
 
 val items = listOf(
     Screen.Home,
     Screen.Debug,
+    Screen.Auth
 )
 
 @Composable
@@ -67,6 +73,7 @@ fun MainApp() {
             ) {
                 composable(Screen.Home.route) { HomeScreen() }
                 composable(Screen.Debug.route) { DebugScreen() }
+                composable(Screen.Auth.route) { AuthScreen() }
             }
         }
     }
@@ -96,7 +103,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.height(56.dp))
-            SendForm()
+            QnaForm()
         }
     }
 }
