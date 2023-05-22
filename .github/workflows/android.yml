@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-
+    environment: main
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,11 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
         cache: gradle
-
+    - name: Init google_services.json
+      env:
+        GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+      run: |
+        echo "$GOOGLE_SERVICES" | base64 -d > ./app/google-services.json
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
