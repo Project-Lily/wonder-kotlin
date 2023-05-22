@@ -29,38 +29,32 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.service.BLEService
+import com.projectlily.wonderreader.service.QNAService
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.SendForm
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class MainActivity : ComponentActivity() {
 
-    private var btService : BLEService? = null
+    private var btService : QNAService? = null
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
-            btService = (service as BLEService.LocalBinder).getService()
+            btService = (service as QNAService.LocalBinder).getService()
             btService?.let { bt ->
-                if (!bt.initialize()) {
-                    Log.e("BLESERVICE", "Failed to initialize Bluetooth!")
-                    finish()
-                }
                 Log.i("BLESERVICE", "Initializing bluetooth")
-                Log.i("BLESERVICE", "Scan and connect: " + bt.scanAndConnect("Wonder Reader 2"))
+                Log.i("BLESERVICE", "Scan and connect: ")
             }
         }
 
@@ -74,7 +68,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MainApp()
         }
-        val gattIntent = Intent(this, BLEService::class.java)
+        val gattIntent = Intent(this, QNAService::class.java)
         bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 }

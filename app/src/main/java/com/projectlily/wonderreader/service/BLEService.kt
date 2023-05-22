@@ -22,8 +22,6 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import java.util.UUID
-import java.util.function.Consumer
 
 
 @SuppressLint("MissingPermission")
@@ -32,34 +30,47 @@ class BLEService : Service() {
     companion object {
         const val GATT_CONNECTED = "wonderreader.gatt.connected"
         const val GATT_DISCONNECTED = "wonderreader.gatt.disconnected"
-        const val BLETAG = "BT Service"
+        const val GATT_SERVICES_DISCOVERED = "wonderreader.gatt.service.discovered"
+        const val GATT_NOTIFICATION = "wonderreader.gatt.notification"
+        const val GATT_READ = "wonderreader.gatt.read"
+
+        const val GATT_INTENT_DATA = "data"
+        const val GATT_INTENT_ADDRESS = "address"
+
+        private const val TAG = "BT Service"
     }
 
     private val binder = LocalBinder()
-    private var btAdapter : BluetoothAdapter? = null
+    var btAdapter : BluetoothAdapter? = null
     private var btGatts : ArrayList<BluetoothGatt> = ArrayList()
     private var scanning : Boolean = false
 
-    private val btGattCallback = object : BluetoothGattCallback() {
-        private fun enableIndications(gatt: BluetoothGatt?, c: BluetoothGattCharacteristic?) {
-            if (c == null || gatt == null) return
-            gatt.setCharacteristicNotification(c, true)
-        }
+    override fun onCreate() {
+        super.onCreate()
+        val btService = getSystemService(Context.BLUETOOTH_SERVICE)
+        val btManager = btService as BluetoothManager
+        btAdapter = btManager.adapter
+    }
 
+    private val btGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.i(BLETAG, "GATT Connected " + gatt?.device?.address)
+                Log.i(TAG, "GATT Connected " + gatt?.device?.address)
                 gatt?.discoverServices()
                 broadcastUpdate(GATT_CONNECTED)
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.i(BLETAG, "GATT Disconnected " + gatt?.device?.address)
+                Log.i(TAG, "GATT Disconnected " + gatt?.device?.address)
                 broadcastUpdate(GATT_DISCONNECTED)
             }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            Log.i(BLETAG, "Service discovered")
-            enableIndications(gatt, gatt?.getService(UUID.fromString("0000abab-0000-1000-8000-00805f9b34fb"))?.getCharacteristic(UUID.fromString("0000bbbb-0000-1000-8000-00805f9b34fb")))
+            Log.i(TAG, "Service discovered")
+            if (gatt != null) {
+                val intent = Intent(GATT_SERVICES_DISCOVERED)
+                intent.putExtra(GATT_INTENT_ADDRESS, gatt.device.address)
+                sendBroadcast(intent)
+            }
         }
 
         override fun onCharacteristicRead(
@@ -68,7 +79,11 @@ class BLEService : Service() {
             value: ByteArray,
             status: Int
         ) {
-            Log.i(BLETAG, "Characteristic read value is: " + String(value, Charsets.UTF_8))
+            Log.i(TAG, "Characteristic read value is: " + String(value, Charsets.UTF_8))
+            val intent = Intent(GATT_READ)
+            intent.putExtra(GATT_INTENT_DATA, value)
+            intent.putExtra(GATT_INTENT_ADDRESS, gatt.device.address)
+            sendBroadcast(intent)
         }
 
         override fun onCharacteristicChanged(
@@ -76,7 +91,11 @@ class BLEService : Service() {
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray
         ) {
-            Log.i(BLETAG, "Characteristic indication value is: " + String(value, Charsets.UTF_8))
+            Log.i(TAG, "Characteristic indication value is: " + String(value, Charsets.UTF_8))
+            val intent = Intent(GATT_NOTIFICATION)
+            intent.putExtra(GATT_INTENT_DATA, value)
+            intent.putExtra(GATT_INTENT_ADDRESS, gatt.device.address)
+            sendBroadcast(intent)
         }
 
         // For this, I thank my man mxkmn
@@ -108,28 +127,14 @@ class BLEService : Service() {
         return btGatts.map { bt -> bt.device }
     }
 
-
-    private var callbacks: HashMap<String, ArrayList<Consumer<*>>> = HashMap()
-
-    fun <T> onReceive(event: String, callback: Consumer<T>) {
-        callbacks[event]?.add(callback) ?: {
-            val arr = ArrayList<Consumer<*>>()
-            arr.add(callback)
-            callbacks[event] = arr
-        }
+    fun getGatt(address: String) : BluetoothGatt? {
+        return btGatts.find { gatt -> gatt.device.address == address }
     }
 
     // Use this function to broadcast activities of bluetooth updates
     private fun broadcastUpdate(action: String) {
         val intent = Intent(action)
         sendBroadcast(intent)
-    }
-
-    fun initialize(): Boolean {
-        val btService = getSystemService(Context.BLUETOOTH_SERVICE) ?: return false
-        val btManager = btService as BluetoothManager
-        btAdapter = btManager.adapter
-        return true
     }
 
     fun scanAndConnect(name: String, length: Long = 5000L): Boolean {
@@ -143,7 +148,7 @@ class BLEService : Service() {
 
         // If still scanning, don't do anything
         if (scanning) return false
-        Log.i(BLETAG, "Start scan")
+        Log.i(TAG, "Start scan")
 
         btAdapter?. let { adapter ->
             val scanner = adapter.bluetoothLeScanner
@@ -151,10 +156,10 @@ class BLEService : Service() {
                 override fun onScanResult(callbackType: Int, result: ScanResult?) {
                     val device = result?.device
                     if (device != null && device.name == name) {
-                        Log.i(BLETAG, "Found device '" + device.name + "(" + device.address + ")'")
+                        Log.i(TAG, "Found device '" + device.name + "(" + device.address + ")'")
                         // Check if it's on the list or not
                         if (btGatts.find { bt -> bt.device.address == device.address } != null) return
-                        Log.i(BLETAG, "Connecting to GATT device " + device.address)
+                        Log.i(TAG, "Connecting to GATT device " + device.address)
                         btGatts.add(device.connectGatt(this@BLEService, false, btGattCallback))
                     }
                 }
@@ -162,7 +167,7 @@ class BLEService : Service() {
             scanner.startScan(scanCallback)
             scanning = true
             Handler(mainLooper).postDelayed({
-                Log.i(BLETAG, "Stop scan")
+                Log.i(TAG, "Stop scan")
                 scanning = false
                 btAdapter?.bluetoothLeScanner?.flushPendingScanResults(scanCallback)
                 btAdapter?.bluetoothLeScanner?.stopScan(scanCallback)
