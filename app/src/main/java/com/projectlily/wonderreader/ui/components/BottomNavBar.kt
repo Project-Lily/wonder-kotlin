@@ -20,6 +20,7 @@ fun BottomNavBar(navController: NavController, items: List<Screen>, modifier: Mo
     BottomNavigation(backgroundColor = MaterialTheme.colorScheme.secondary, modifier = modifier) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
+
         items.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = null) },
