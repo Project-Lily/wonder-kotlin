@@ -88,9 +88,9 @@ fun MainApp() {
         val navController = rememberNavController()
 
         Scaffold(
-            topBar = { TopBar(navController) },
+            topBar = { TopBar(navController, screenItems, navBarItems) },
             floatingActionButton = { ActionButton(navController, screenItems) },
-            bottomBar = { BottomNavBar(navController, navBarItems) }) { padding ->
+            bottomBar = { BottomNavBar(navController, screenItems, navBarItems) }) { padding ->
             NavHost(
                 navController,
                 startDestination = Screen.Home.route,
