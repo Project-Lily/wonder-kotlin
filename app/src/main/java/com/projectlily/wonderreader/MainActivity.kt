@@ -39,27 +39,30 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.projectlily.wonderreader.service.BLEService
 import com.projectlily.wonderreader.service.QNAService
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.SendForm
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
 
-    private var btService : QNAService? = null
+    private var qnaService : QNAService? = null
+
+    private fun testCallback(data: JSONObject) {
+        Log.i("Service Test", "Got data ${data.getJSONObject("data")}")
+        qnaService?.sendQuestion("Send question works! ${data.getJSONObject("data")}")
+    }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
-            btService = (service as QNAService.LocalBinder).getService()
-            btService?.let { bt ->
-                Log.i("BLESERVICE", "Initializing bluetooth")
-                Log.i("BLESERVICE", "Scan and connect: ")
-            }
+            qnaService = (service as QNAService.LocalBinder).getService()
+            qnaService?.onAnswerReceive("time", ::testCallback)
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-            btService = null
+            qnaService?.removeOnAnswerReceive("time", ::testCallback)
+            qnaService = null
         }
     }
 
@@ -70,6 +73,11 @@ class MainActivity : ComponentActivity() {
         }
         val gattIntent = Intent(this, QNAService::class.java)
         bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(serviceConnection)
     }
 }
 

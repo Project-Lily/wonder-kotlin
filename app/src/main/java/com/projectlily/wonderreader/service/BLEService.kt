@@ -33,6 +33,7 @@ class BLEService : Service() {
         const val GATT_SERVICES_DISCOVERED = "wonderreader.gatt.service.discovered"
         const val GATT_NOTIFICATION = "wonderreader.gatt.notification"
         const val GATT_READ = "wonderreader.gatt.read"
+        const val GATT_WRITE = "wonderreader.gatt.write"
 
         const val GATT_INTENT_DATA = "data"
         const val GATT_INTENT_ADDRESS = "address"
@@ -79,7 +80,6 @@ class BLEService : Service() {
             value: ByteArray,
             status: Int
         ) {
-            Log.i(TAG, "Characteristic read value is: " + String(value, Charsets.UTF_8))
             val intent = Intent(GATT_READ)
             intent.putExtra(GATT_INTENT_DATA, value)
             intent.putExtra(GATT_INTENT_ADDRESS, gatt.device.address)
@@ -91,7 +91,6 @@ class BLEService : Service() {
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray
         ) {
-            Log.i(TAG, "Characteristic indication value is: " + String(value, Charsets.UTF_8))
             val intent = Intent(GATT_NOTIFICATION)
             intent.putExtra(GATT_INTENT_DATA, value)
             intent.putExtra(GATT_INTENT_ADDRESS, gatt.device.address)
@@ -121,6 +120,17 @@ class BLEService : Service() {
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic
         ) = onCharacteristicChanged(gatt, characteristic, characteristic.value)
+
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            gatt ?: return
+            val intent = Intent(GATT_WRITE)
+            intent.putExtra(GATT_INTENT_ADDRESS, gatt.device.address)
+            sendBroadcast(intent)
+        }
     }
 
     fun getDevices() : List<BluetoothDevice> {

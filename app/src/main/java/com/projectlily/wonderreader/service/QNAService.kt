@@ -11,26 +11,40 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import org.json.JSONException
+import org.json.JSONObject
+import java.util.PriorityQueue
+import java.util.Queue
 import java.util.UUID
+import java.util.Vector
 import java.util.function.Consumer
 
 @SuppressLint("MissingPermission")
 class QNAService : Service() {
     companion object {
         private val QNA_SERVICE_UUID = UUID.fromString("0000abab-0000-1000-8000-00805f9b34fb")
-        private val QNA_CHARACTERISTIC_TEST_UUID = UUID.fromString("0000bbbb-0000-1000-8000-00805f9b34fb")
+        private val QNA_CHARACTERISTIC_TEST_UUID =
+            UUID.fromString("0000bbbb-0000-1000-8000-00805f9b34fb")
         private val QNA_CHARACTERISTIC_QNA_UUID =
             UUID.fromString("0000cccc-0000-1000-8000-00805f9b34fb")
 
         private const val TAG = "QNA Service"
-        private val CLIENT_CHARACTERISTIC_CONFIGURATION_UUID = "00002902-0000-1000-8000-00805f9b34fb"
+        private const val CLIENT_CHARACTERISTIC_CONFIGURATION_UUID =
+            "00002902-0000-1000-8000-00805f9b34fb"
+
+        private const val WRITE_CHUNK_SIZE = 20
     }
 
     private val binder = LocalBinder()
     private var btService: BLEService? = null
-    private var callbacks: HashMap<String, ArrayList<Consumer<*>>> = HashMap()
+    private var callbacks: HashMap<String, ArrayList<Consumer<JSONObject>>> = HashMap()
+
+    // TODO: This does not support multiple BT devices!
+    private val packageBuilder: Vector<Byte> = Vector()
+    private val writeQueue: Queue<String> = PriorityQueue()
 
     private val btIntentFilter = IntentFilter().apply {
         addAction(BLEService.GATT_CONNECTED)
@@ -38,15 +52,28 @@ class QNAService : Service() {
         addAction(BLEService.GATT_SERVICES_DISCOVERED)
         addAction(BLEService.GATT_NOTIFICATION)
         addAction(BLEService.GATT_READ)
+        addAction(BLEService.GATT_WRITE)
     }
 
     private val btServiceReceiver = object : BroadcastReceiver() {
-        fun getQNACharacteristic(address: String): BluetoothGattCharacteristic? {
-            return btService?.getGatt(address)?.getService(QNA_SERVICE_UUID)?.getCharacteristic(
-                QNA_CHARACTERISTIC_QNA_UUID
-            ) ?: return null
+        private var counter = 0
+        private var startTime: Long = 0L
+
+        private fun onDataComplete() {
+            Log.i(
+                TAG,
+                "Chunk load complete in $counter transfers in ${System.currentTimeMillis() - startTime}ms"
+            )
+            val strData = String(packageBuilder.toByteArray(), Charsets.UTF_8)
+            val jsonData = JSONObject(strData)
+            val event = try {
+                jsonData.getString("event")
+            } catch (_: JSONException) {
+                ""
+            }
+            callbacks[event]?.forEach(Consumer { consumer -> consumer.accept(jsonData) })
         }
-        var counter = 0
+
         override fun onReceive(c: Context, intent: Intent) {
             when (intent.action) {
                 BLEService.GATT_SERVICES_DISCOVERED -> {
@@ -56,10 +83,23 @@ class QNAService : Service() {
 
                     // Enable indication. This whole song and dance must be done to enable indication
                     val indicateResult = gatt.setCharacteristicNotification(characteristic, true)
-                    val descriptor = characteristic.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTIC_CONFIGURATION_UUID))
-                    descriptor.value = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                    Log.i(TAG, "Success Indicate ($address) " + (gatt.writeDescriptor(descriptor) && indicateResult))
+                    val descriptor = characteristic.getDescriptor(
+                        UUID.fromString(CLIENT_CHARACTERISTIC_CONFIGURATION_UUID)
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Log.i(
+                            TAG,
+                            "Success Indicate ($address) ${gatt.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE)} $indicateResult"
+                        )
+                    } else {
+                        descriptor.value = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                        Log.i(
+                            TAG,
+                            "Success Indicate ($address) " + (gatt.writeDescriptor(descriptor) && indicateResult)
+                        )
+                    }
                 }
+
                 BLEService.GATT_NOTIFICATION -> {
                     val address = intent.getStringExtra(BLEService.GATT_INTENT_ADDRESS) ?: return
                     val gatt = btService?.getGatt(address) ?: return
@@ -71,25 +111,62 @@ class QNAService : Service() {
 
                     // Read the characteristic in chunks
                     Log.i(TAG, "Read chunk: " + gatt.readCharacteristic(characteristic))
-                    counter++
-                }
-                BLEService.GATT_READ -> {
-                    if (counter > 20) return
-                    val data = intent.getByteArrayExtra(BLEService.GATT_INTENT_DATA) ?: return
-                    Log.i(TAG, "Read this: " + String(data, Charsets.UTF_8))
 
-                    if ((data.find { b -> b == 0.toByte() }) != null) {
-                        Log.i(TAG, "Done reading chunk");
+                    // Reset packageBuilder
+                    packageBuilder.clear()
+                    counter = 0
+                    startTime = System.currentTimeMillis()
+                }
+
+                BLEService.GATT_READ -> {
+                    val data = intent.getByteArrayExtra(BLEService.GATT_INTENT_DATA) ?: return
+                    packageBuilder.addAll(data.asIterable())
+
+                    if (data[data.size - 1] == 0.toByte()) {
+                        packageBuilder.removeAt(packageBuilder.size - 1)
+                        onDataComplete()
                     } else {
                         // If a null terminator character is not found, then continue reading
-                        val address = intent.getStringExtra(BLEService.GATT_INTENT_ADDRESS) ?: return
+                        val address =
+                            intent.getStringExtra(BLEService.GATT_INTENT_ADDRESS) ?: return
                         val gatt = btService?.getGatt(address) ?: return
                         val characteristic = getQNACharacteristic(address) ?: return
-                        Log.i(TAG, "Read chunk: " + gatt.readCharacteristic(characteristic))
+                        Log.i(
+                            TAG,
+                            "Read chunk ($counter): " + gatt.readCharacteristic(characteristic)
+                        )
+                    }
+                    counter++
+                }
+
+                BLEService.GATT_WRITE -> {
+                    // See if there is more to write
+                    val address = intent.getStringExtra(BLEService.GATT_INTENT_ADDRESS) ?: return
+                    val gatt = btService?.getGatt(address) ?: return
+                    val characteristic = getQNACharacteristic(address) ?: return
+                    if (writeQueue.size > 0) {
+                        // Get string
+                        val data = writeQueue.remove()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            gatt.writeCharacteristic(
+                                characteristic,
+                                data.toByteArray(),
+                                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                            )
+                        } else {
+                            characteristic.value = data.toByteArray()
+                            gatt.writeCharacteristic(characteristic)
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun getQNACharacteristic(address: String): BluetoothGattCharacteristic? {
+        return btService?.getGatt(address)?.getService(QNA_SERVICE_UUID)?.getCharacteristic(
+            QNA_CHARACTERISTIC_QNA_UUID
+        ) ?: return null
     }
 
     private val btServiceConnection = object : ServiceConnection {
@@ -103,12 +180,63 @@ class QNAService : Service() {
         }
     }
 
-    fun <T> onReceive(event: String, callback: Consumer<T>) {
-        callbacks[event]?.add(callback) ?: {
-            val arr = ArrayList<Consumer<*>>()
+    fun onAnswerReceive(event: String, callback: Consumer<JSONObject>) {
+        val checkArr = callbacks[event]
+        if (checkArr == null) {
+            val arr = ArrayList<Consumer<JSONObject>>()
             arr.add(callback)
             callbacks[event] = arr
+        } else {
+            checkArr.add(callback)
         }
+    }
+
+    fun removeOnAnswerReceive(event: String, callback: Consumer<JSONObject>): Boolean {
+        return callbacks[event]?.remove(callback) == true
+    }
+
+    // TODO: @Aric, @JJ, you might wanna change the datatype for this. Just send a json as string
+    // thru bluetooth yeah?
+    fun sendQuestion(question: String): Boolean {
+        try {
+            btService?.getDevices()?.forEach { devices ->
+                val characteristic = getQNACharacteristic(devices.address)
+                    ?: throw NullPointerException("No Characteristic")
+                val gatt =
+                    btService?.getGatt(devices.address) ?: throw NullPointerException("No GATT")
+
+                // Split the question to chunks
+                val chunks = (question.length / WRITE_CHUNK_SIZE) + 1
+                for (i in 0 until chunks) {
+                    if (i + 1 == chunks) {
+                        // If this is the last packet
+                        // Add a null terminator
+                        writeQueue.add(question.substring(i * WRITE_CHUNK_SIZE) + '\u0000')
+                    } else {
+                        writeQueue.add(
+                            question.substring(
+                                i * WRITE_CHUNK_SIZE,
+                                (i + 1) * WRITE_CHUNK_SIZE
+                            )
+                        )
+                    }
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    gatt.writeCharacteristic(
+                        characteristic,
+                        writeQueue.remove().toByteArray(Charsets.UTF_8),
+                        BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                    )
+                } else {
+                    characteristic.value = writeQueue.remove().toByteArray(Charsets.UTF_8)
+                    gatt.writeCharacteristic(characteristic)
+                }
+            }
+        } catch (e: NullPointerException) {
+            return false
+        }
+        return true
     }
 
     override fun onCreate() {
