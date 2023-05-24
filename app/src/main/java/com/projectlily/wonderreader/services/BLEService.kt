@@ -1,4 +1,4 @@
-package com.projectlily.wonderreader.service
+package com.projectlily.wonderreader.services
 
 import android.Manifest
 import android.annotation.SuppressLint

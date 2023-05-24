@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.BLEService" />
-        <service android:name=".service.QNAService" />
+        <service android:name=".services.BLEService" />
+        <service android:name=".services.QNACommunicationService" />
     </application>
 </manifest>
