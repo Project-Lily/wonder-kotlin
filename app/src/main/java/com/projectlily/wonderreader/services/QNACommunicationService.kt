@@ -1,4 +1,4 @@
-package com.projectlily.wonderreader.service
+package com.projectlily.wonderreader.services
 
 import android.annotation.SuppressLint
 import android.app.Service
@@ -23,7 +23,7 @@ import java.util.Vector
 import java.util.function.Consumer
 
 @SuppressLint("MissingPermission")
-class QNAService : Service() {
+class QNACommunicationService : Service() {
     companion object {
         private val QNA_SERVICE_UUID = UUID.fromString("0000abab-0000-1000-8000-00805f9b34fb")
         private val QNA_CHARACTERISTIC_TEST_UUID =
@@ -261,8 +261,8 @@ class QNAService : Service() {
     }
 
     inner class LocalBinder : Binder() {
-        fun getService(): QNAService {
-            return this@QNAService
+        fun getService(): QNACommunicationService {
+            return this@QNACommunicationService
         }
     }
 }

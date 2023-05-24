@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.projectlily.wonderreader.service.QNAService
+import com.projectlily.wonderreader.service.QNACommunicationService
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
@@ -38,22 +38,22 @@ import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
 
-    private var qnaService : QNAService? = null
+    private var qnaCommunicationService : QNACommunicationService? = null
 
     private fun testCallback(data: JSONObject) {
         Log.i("Service Test", "Got data ${data.getJSONObject("data")}")
-        qnaService?.sendQuestion("Send question works! ${data.getJSONObject("data")}")
+        qnaCommunicationService?.sendQuestion("Send question works! ${data.getJSONObject("data")}")
     }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
-            qnaService = (service as QNAService.LocalBinder).getService()
-            qnaService?.onAnswerReceive("time", ::testCallback)
+            qnaCommunicationService = (service as QNACommunicationService.LocalBinder).getService()
+            qnaCommunicationService?.onAnswerReceive("time", ::testCallback)
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-            qnaService?.removeOnAnswerReceive("time", ::testCallback)
-            qnaService = null
+            qnaCommunicationService?.removeOnAnswerReceive("time", ::testCallback)
+            qnaCommunicationService = null
         }
     }
 
@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MainApp()
         }
-        val gattIntent = Intent(this, QNAService::class.java)
+        val gattIntent = Intent(this, QNACommunicationService::class.java)
         bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
