@@ -1,5 +1,6 @@
 package com.projectlily.wonderreader.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,14 +20,14 @@ import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.toastErrorHandler
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
-class LoginState() {
+class RegisterState() {
     var email: String by mutableStateOf("")
     var password: String by mutableStateOf("")
 }
 
 @Composable
-fun LoginForm() {
-    val formState = remember { LoginState() }
+fun RegisterForm() {
+    val formState = remember { RegisterState() }
     val context = LocalContext.current
 
     Form(
@@ -42,10 +43,12 @@ fun LoginForm() {
         onChange = { formState.password = it })
     Spacer(Modifier.height(24.dp))
     SendFormButton(
-        text = "Login",
+        text = "Register",
         onValidate = {
-            AuthService.login(formState.email, formState.password,
-                onSuccess = {},
+            AuthService.register(formState.email, formState.password,
+                onSuccess = {
+                    Log.e("yabe", "lmao")
+                },
                 onFailure = toastErrorHandler(context)
         )
     })
@@ -53,13 +56,13 @@ fun LoginForm() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview(modifier: Modifier = Modifier) {
+fun RegisterPreview(modifier: Modifier = Modifier) {
     WonderReaderTheme {
         Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier.padding(bottom = 16.dp),
         ) {
-            LoginForm()
+            RegisterForm()
         }
     }
 }

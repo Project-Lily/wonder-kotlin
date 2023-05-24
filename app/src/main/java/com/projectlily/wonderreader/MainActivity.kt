@@ -34,6 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.ui.components.BottomNavBar
+import com.projectlily.wonderreader.ui.components.LoginForm
 import com.projectlily.wonderreader.ui.components.QnaForm
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
@@ -65,7 +66,6 @@ fun MainApp() {
     WonderReaderTheme {
         val navController = rememberNavController()
         Scaffold(bottomBar = { BottomNavBar(navController, items) }) { padding ->
-            HomeScreen(Modifier.padding(padding))
             NavHost(
                 navController,
                 startDestination = Screen.Home.route,
@@ -73,7 +73,7 @@ fun MainApp() {
             ) {
                 composable(Screen.Home.route) { HomeScreen() }
                 composable(Screen.Debug.route) { DebugScreen() }
-                composable(Screen.Auth.route) { AuthScreen() }
+                authNavGraph(navController)
             }
         }
     }
