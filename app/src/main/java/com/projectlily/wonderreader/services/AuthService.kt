@@ -11,7 +11,7 @@ import com.google.firebase.ktx.Firebase
 // Should abstract over Firebase
 class AuthService {
     companion object {
-        private var auth: FirebaseAuth = Firebase.auth;
+        var auth: FirebaseAuth = Firebase.auth;
 
         fun login(
             email: String,

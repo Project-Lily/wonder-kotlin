@@ -1,5 +1,6 @@
 package com.projectlily.wonderreader.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.services.AuthService
+import com.projectlily.wonderreader.services.QnaService
 import com.projectlily.wonderreader.services.toastErrorHandler
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
@@ -45,9 +47,28 @@ fun LoginForm() {
         text = "Login",
         onValidate = {
             AuthService.login(formState.email, formState.password,
-                onSuccess = {},
+                onSuccess = {
+                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+//                   Navigate to other page here
+                },
                 onFailure = toastErrorHandler(context)
         )
+    })
+    SendFormButton(
+        text = "Register",
+        onValidate = {
+            AuthService.register(formState.email, formState.password,
+                onSuccess = {
+                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+//                   Navigate to other page here
+                },
+                onFailure = toastErrorHandler(context)
+            )
+        })
+    SendFormButton(
+        text = "Qna folder",
+        onValidate = {
+            QnaService.addQuestionAndAnswer("test?", "biibg", "Sciences")
     })
 }
 
