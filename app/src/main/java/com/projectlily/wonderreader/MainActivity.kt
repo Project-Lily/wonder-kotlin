@@ -1,6 +1,12 @@
 package com.projectlily.wonderreader
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
@@ -19,6 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.projectlily.wonderreader.service.QNAService
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
@@ -27,13 +34,41 @@ import com.projectlily.wonderreader.ui.screens.HomeScreen
 import com.projectlily.wonderreader.ui.screens.QnAScreen
 import com.projectlily.wonderreader.ui.screens.SendToDeviceScreen
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
+
+    private var qnaService : QNAService? = null
+
+    private fun testCallback(data: JSONObject) {
+        Log.i("Service Test", "Got data ${data.getJSONObject("data")}")
+        qnaService?.sendQuestion("Send question works! ${data.getJSONObject("data")}")
+    }
+
+    private val serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
+            qnaService = (service as QNAService.LocalBinder).getService()
+            qnaService?.onAnswerReceive("time", ::testCallback)
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            qnaService?.removeOnAnswerReceive("time", ::testCallback)
+            qnaService = null
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MainApp()
         }
+        val gattIntent = Intent(this, QNAService::class.java)
+        bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(serviceConnection)
     }
 }
 
