@@ -180,19 +180,19 @@ class QNACommunicationService : Service() {
         }
     }
 
-    fun onAnswerReceive(event: String, callback: Consumer<JSONObject>) {
-        val checkArr = callbacks[event]
+    fun onAnswerReceive(callback: Consumer<JSONObject>) {
+        val checkArr = callbacks["answer"]
         if (checkArr == null) {
             val arr = ArrayList<Consumer<JSONObject>>()
             arr.add(callback)
-            callbacks[event] = arr
+            callbacks["answer"] = arr
         } else {
             checkArr.add(callback)
         }
     }
 
-    fun removeOnAnswerReceive(event: String, callback: Consumer<JSONObject>): Boolean {
-        return callbacks[event]?.remove(callback) == true
+    fun removeOnAnswerReceive(callback: Consumer<JSONObject>): Boolean {
+        return callbacks["answer"]?.remove(callback) == true
     }
 
     // TODO: @Aric, @JJ, you might wanna change the datatype for this. Just send a json as string

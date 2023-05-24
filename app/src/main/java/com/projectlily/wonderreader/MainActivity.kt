@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.projectlily.wonderreader.service.QNACommunicationService
+import com.projectlily.wonderreader.services.QNACommunicationService
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
@@ -48,11 +48,11 @@ class MainActivity : ComponentActivity() {
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
             qnaCommunicationService = (service as QNACommunicationService.LocalBinder).getService()
-            qnaCommunicationService?.onAnswerReceive("time", ::testCallback)
+            qnaCommunicationService?.onAnswerReceive(::testCallback)
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-            qnaCommunicationService?.removeOnAnswerReceive("time", ::testCallback)
+            qnaCommunicationService?.removeOnAnswerReceive(::testCallback)
             qnaCommunicationService = null
         }
     }
