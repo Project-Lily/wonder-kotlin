@@ -46,30 +46,39 @@ fun LoginForm() {
     SendFormButton(
         text = "Login",
         onValidate = {
-            AuthService.login(formState.email, formState.password,
+            AuthService.login(
+                formState.email, formState.password,
                 onSuccess = {
+//                  TODO: Validation here
                     Log.e("yabe", "${AuthService.auth.currentUser?.email}")
-//                   Navigate to other page here
-                },
-                onFailure = toastErrorHandler(context)
-        )
-    })
-    SendFormButton(
-        text = "Register",
-        onValidate = {
-            AuthService.register(formState.email, formState.password,
-                onSuccess = {
-                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
-//                   Navigate to other page here
+//                  TODO: Navigation here
                 },
                 onFailure = toastErrorHandler(context)
             )
         })
     SendFormButton(
-        text = "Qna folder",
+        text = "Register",
         onValidate = {
-            QnaService.addQuestionAndAnswer("test?", "biibg", "Sciences")
-    })
+            AuthService.register(
+                formState.email, formState.password,
+                onSuccess = {
+//                  TODO: Validation here
+                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+//                  TODO: Navigate to other page here
+                },
+                onFailure = toastErrorHandler(context)
+            )
+        })
+    SendFormButton(
+        text = "Qna Add",
+        onValidate = {
+            QnaService.addQuestionAndAnswer(formState.email, formState.password, "Math")
+        })
+    SendFormButton(
+        text = "Qna Get",
+        onValidate = {
+            QnaService.getAllQnaFromFolder("Math", { Log.e("yabe", it.toString()) })
+        })
 }
 
 @Preview(showBackground = true)
@@ -77,8 +86,8 @@ fun LoginForm() {
 fun LoginPreview(modifier: Modifier = Modifier) {
     WonderReaderTheme {
         Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier.padding(bottom = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.padding(bottom = 16.dp),
         ) {
             LoginForm()
         }
