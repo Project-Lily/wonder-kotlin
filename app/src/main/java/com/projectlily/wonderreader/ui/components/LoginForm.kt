@@ -1,15 +1,20 @@
 package com.projectlily.wonderreader.ui.components
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,23 +31,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.QnaService
 import com.projectlily.wonderreader.services.toastErrorHandler
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
-class LoginState() {
-    var email: String by mutableStateOf("")
-    var password: String by mutableStateOf("")
-}
-
 @Composable
-fun LoginForm() {
-    val formState = remember { LoginState() }
+fun LoginForm(navController: NavController) {
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable{ mutableStateOf(false) }
 
     OutlinedTextField(
         value = email,
@@ -52,8 +53,11 @@ fun LoginForm() {
         placeholder = { Text(text = "Email") },
         label = { Text(text = "Email") },
         singleLine = true,
-    )
-    OutlinedTextField(
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        isError = isError,
+   )
+    Spacer(Modifier.height(20.dp))
+    TextField(
         value = password,
         onValueChange = {
             password = it
@@ -76,50 +80,45 @@ fun LoginForm() {
     SendFormButton(
         text = "Login",
         onValidate = {
-            AuthService.login(
-                formState.email, formState.password,
-                onSuccess = {
-//                  TODO: Validation here
-                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
-//                  TODO: Navigation here
-                },
-                onFailure = toastErrorHandler(context)
-            )
+            if (email.isNotEmpty() && password.isNotEmpty()){
+                AuthService.login(
+                    email, password,
+                    onSuccess = {
+                        navController.navigate("home_root")
+                        Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+    //                  TODO: Navigation here
+                    },
+                    onFailure = toastErrorHandler(context)
+                )
+            } else {
+                Toast.makeText(context, "Please fill in all the fields", Toast.LENGTH_SHORT).show()
+            }
+
         })
     SendFormButton(
         text = "Register",
         onValidate = {
-            AuthService.register(
-                formState.email, formState.password,
-                onSuccess = {
-//                  TODO: Validation here
-                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
-//                  TODO: Navigate to other page here
-                },
-                onFailure = toastErrorHandler(context)
-            )
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                AuthService.register(
+                    email, password,
+                    onSuccess = {
+                        navController.navigate("home_root")
+                        Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+                    },
+                    onFailure = toastErrorHandler(context)
+                )
+            } else {
+                Toast.makeText(context, "Please fill in all the fields", Toast.LENGTH_SHORT).show()
+            }
         })
     SendFormButton(
         text = "Qna Add",
         onValidate = {
-            QnaService.addQuestionAndAnswer(formState.email, formState.password, "Math")
+            QnaService.addQuestionAndAnswer(email,password, "Math")
         })
     SendFormButton(
         text = "Qna Get",
         onValidate = {
             QnaService.getAllQnaFromFolder("Math", { Log.e("yabe", it.toString()) })
         })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginPreview(modifier: Modifier = Modifier) {
-    WonderReaderTheme {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(bottom = 16.dp),
-        ) {
-            LoginForm()
-        }
-    }
 }

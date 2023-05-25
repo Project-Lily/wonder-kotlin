@@ -2,7 +2,6 @@ package com.projectlily.wonderreader.services
 
 import android.content.res.Resources.NotFoundException
 import android.util.Log
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -53,7 +52,7 @@ class QnaService {
             val ref = getQnaRef();
             val output = mutableListOf<QnA>();
             ref.get().addOnSuccessListener {
-                if (it != null) {
+                if (it.data?.get(categoryName) != null) {
                     var questionList = JSONArray(it.data?.get(categoryName).toString())
                     Log.e("yabe", questionList.toString())
                     for (i in 0 until questionList.length()) {
@@ -65,6 +64,7 @@ class QnaService {
                     }
                     onSuccessListener(output)
                 }
+                onSuccessListener(output)
             }.addOnFailureListener(onFailureListener)
         }
     }

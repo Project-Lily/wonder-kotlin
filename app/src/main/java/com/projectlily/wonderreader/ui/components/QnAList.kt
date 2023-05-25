@@ -31,12 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.R
+import com.projectlily.wonderreader.types.QnA
 
-data class QnAData(val question: String, val answer: String)
 
 @Composable
 fun QnAList(
-    data: List<QnAData>,
+    data: List<QnA>,
     modifier: Modifier = Modifier,
     isChoosing: Boolean = false,
     chosenIndex: Int = -1,

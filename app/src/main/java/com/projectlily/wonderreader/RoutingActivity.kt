@@ -26,13 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.projectlily.wonderreader.services.QNACommunicationService
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
-import com.projectlily.wonderreader.ui.components.LoginForm
 import com.projectlily.wonderreader.ui.components.TopBar
 import com.projectlily.wonderreader.ui.screens.AddQnAScreen
 import com.projectlily.wonderreader.ui.screens.HomeScreen
@@ -121,35 +122,17 @@ val navBarItems = listOf(
     Screen.Auth
 )
 
-class QnAChosen {
-    var chosenItemIndex: Int by mutableStateOf(-1)
-    var chosenItemCategory: String by mutableStateOf("")
-}
-
 @Composable
 fun MainApp() {
     WonderReaderTheme {
         val navController = rememberNavController()
-        val qnaState = remember { QnAChosen() }
 
-        Scaffold(
-            topBar = { TopBar(navController, screenItems, navBarItems) },
-            floatingActionButton = { ActionButton(navController, screenItems) },
-            bottomBar = { BottomNavBar(navController, screenItems, navBarItems) }) { padding ->
-            NavHost(
-                navController,
-                startDestination = Screen.Home.route,
-                Modifier.padding(padding)
-            ) {
-                composable(Screen.Home.route) { HomeScreen() }
-                composable(Screen.Debug.route) { DebugScreen() }
-                composable(Screen.Auth.route) { AuthScreen {
-
-                }}
-                composable(Screen.AddQnA.route) { AddQnAScreen() }
-                authNavGraph(navController)
-                qnaNavGraph(navController, qnaState)
-            }
+        NavHost(
+            navController,
+            startDestination = "auth",
+        ) {
+            homeNavGraph(navController)
+            authNavGraph(navController)
         }
     }
 }

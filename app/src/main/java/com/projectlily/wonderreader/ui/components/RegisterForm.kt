@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.toastErrorHandler
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
@@ -26,7 +27,7 @@ class RegisterState() {
 }
 
 @Composable
-fun RegisterForm() {
+fun RegisterForm(navController: NavController) {
     val formState = remember { RegisterState() }
     val context = LocalContext.current
 
@@ -47,22 +48,10 @@ fun RegisterForm() {
         onValidate = {
             AuthService.register(formState.email, formState.password,
                 onSuccess = {
+                    navController.navigate("home_root")
                     Log.e("yabe", "lmao")
                 },
                 onFailure = toastErrorHandler(context)
         )
     })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterPreview(modifier: Modifier = Modifier) {
-    WonderReaderTheme {
-        Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier.padding(bottom = 16.dp),
-        ) {
-            RegisterForm()
-        }
-    }
 }

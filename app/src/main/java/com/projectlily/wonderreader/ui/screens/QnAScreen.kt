@@ -9,10 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.QnAChosen
 import com.projectlily.wonderreader.SampleData
+import com.projectlily.wonderreader.types.QnA
 import com.projectlily.wonderreader.ui.components.QnAList
 
 @Composable
-fun QnAScreen(qnaState: QnAChosen, modifier: Modifier = Modifier) {
+fun QnAScreen(qnaState: QnAChosen, data: MutableList<QnA>, modifier: Modifier = Modifier) {
 
     Surface(
         modifier = modifier
@@ -21,7 +22,7 @@ fun QnAScreen(qnaState: QnAChosen, modifier: Modifier = Modifier) {
         color = MaterialTheme.colorScheme.background
     ) {
         QnAList(
-            data = SampleData.QnASample,
+            data = data,
             isChoosing = true,
             chosenIndex = qnaState.chosenItemIndex,
             onClick = { qnaState.chosenItemIndex = it })

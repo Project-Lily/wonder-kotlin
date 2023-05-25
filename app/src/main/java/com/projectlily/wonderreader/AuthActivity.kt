@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,13 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.projectlily.wonderreader.ui.components.LoginForm
 import com.projectlily.wonderreader.ui.components.RegisterForm
@@ -32,10 +28,10 @@ import com.projectlily.wonderreader.ui.components.RegisterForm
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(startDestination = "login", route="auth") {
         composable(AuthScreen.Login.route) { AuthScreen {
-            LoginForm()
+            LoginForm(navController)
         }}
         composable(AuthScreen.Register.route) { AuthScreen {
-            RegisterForm()
+            RegisterForm(navController)
         }}
     }
 }
@@ -46,7 +42,7 @@ sealed class AuthScreen(val route: String) {
 }
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier, content: @Composable() () -> Unit) {
+fun AuthScreen(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Surface(
         modifier = modifier
             .fillMaxSize()
