@@ -100,8 +100,8 @@ class QNACommunicationService : Service() {
                             "Success Indicate ($address) " + (gatt.writeDescriptor(descriptor) && indicateResult)
                         )
                     }
-                    val intent = Intent(QNA_READY)
-                    sendBroadcast(intent)
+                    val qnaReadyIntent = Intent(QNA_READY)
+                    sendBroadcast(qnaReadyIntent)
                 }
 
                 BLEService.GATT_NOTIFICATION -> {
