@@ -1,32 +1,48 @@
 package com.projectlily.wonderreader.services
 
-import com.google.android.gms.tasks.OnCompleteListener
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 // Should abstract over Firebase
 class AuthService {
-    private var auth: FirebaseAuth = Firebase.auth;
+    companion object {
+        var auth: FirebaseAuth = Firebase.auth;
 
-    fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
+        fun login(
+            email: String,
+            password: String,
+            onSuccess: (AuthResult) -> Unit,
+            onFailure: (Exception) -> Unit = { Log.i("yabe", "Login fail: " + it.message) }
+        ) {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure)
+        }
+
+        fun register(
+            email: String,
+            password: String,
+            onSuccess: (AuthResult) -> Unit,
+            onFailure: (Exception) -> Unit = { Log.i("yabe", "Login fail: " + it.message) }
+        ) {
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure)
+        }
     }
+}
 
-    fun login(email: String, password: String, onComplete: OnCompleteListener<AuthResult>) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(onComplete)
-    }
-
-    fun register(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-    }
-
-    fun register(email: String, password: String, onComplete: OnCompleteListener<AuthResult>) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(onComplete)
+fun toastErrorHandler(context: Context): (Exception) -> Unit {
+    return { e: Exception ->
+        Toast.makeText(
+            context,
+            "${e.message}",
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

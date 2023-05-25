@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.services.QNACommunicationService
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
+import com.projectlily.wonderreader.ui.components.LoginForm
 import com.projectlily.wonderreader.ui.components.TopBar
 import com.projectlily.wonderreader.ui.screens.AddQnAScreen
 import com.projectlily.wonderreader.ui.screens.HomeScreen
@@ -142,8 +143,11 @@ fun MainApp() {
             ) {
                 composable(Screen.Home.route) { HomeScreen() }
                 composable(Screen.Debug.route) { DebugScreen() }
-                composable(Screen.Auth.route) { AuthScreen() }
+                composable(Screen.Auth.route) { AuthScreen {
+
+                }}
                 composable(Screen.AddQnA.route) { AddQnAScreen() }
+                authNavGraph(navController)
                 qnaNavGraph(navController, qnaState)
             }
         }
