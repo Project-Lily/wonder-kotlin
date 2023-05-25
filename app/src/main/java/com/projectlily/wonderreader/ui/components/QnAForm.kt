@@ -19,7 +19,7 @@ import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class QnAState {
     val options = listOf("Math", "Language", "Science", "Social Science")
-
+    
     var category: String by mutableStateOf(options[0])
     var question: String by mutableStateOf("")
     var answer: String by mutableStateOf("")
