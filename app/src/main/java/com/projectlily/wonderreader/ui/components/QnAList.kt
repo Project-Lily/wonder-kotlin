@@ -3,6 +3,7 @@ package com.projectlily.wonderreader.ui.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,7 +38,11 @@ data class QnAData(val question: String, val answer: String)
 fun QnAList(
     data: List<QnAData>,
     modifier: Modifier = Modifier,
+    isChoosing: Boolean = false,
+    chosenIndex: Int = -1,
+    onClick: (Int) -> Unit = {}
 ) {
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(top = 4.dp)
     ) {
@@ -44,19 +50,45 @@ fun QnAList(
             QnAElement(
                 index = index + 1,
                 question = data.question,
-                answer = data.answer
+                answer = data.answer,
+                isChoosing = isChoosing,
+                chosenItemIndex = chosenIndex + 1,
+                onClick = onClick
             )
         }
     }
 }
 
 @Composable
-private fun QnAElement(index: Int, question: String, answer: String) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        modifier = Modifier.padding(8.dp)
-    ) {
-        QnAContent(index = index, question = question, answer = answer)
+private fun QnAElement(
+    index: Int,
+    question: String,
+    answer: String,
+    isChoosing: Boolean,
+    chosenItemIndex: Int = -1,
+    onClick: (Int) -> Unit = {}
+) {
+    val isChosenCheck = chosenItemIndex == index
+    val border = if (isChosenCheck) BorderStroke(4.dp, Color.Black) else null
+
+    if (isChoosing) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+            onClick = {
+                onClick(index - 1)
+            },
+            border = border,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            QnAContent(index = index, question = question, answer = answer)
+        }
+    } else {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier.padding(8.dp)
+        ) {
+            QnAContent(index = index, question = question, answer = answer)
+        }
     }
 }
 
