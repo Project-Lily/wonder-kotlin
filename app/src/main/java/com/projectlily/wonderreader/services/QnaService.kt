@@ -51,7 +51,6 @@ class QnaService {
             }
         ) {
             val ref = getQnaRef();
-
             val output = mutableListOf<QnA>();
             ref.get().addOnSuccessListener {
                 if (it != null) {

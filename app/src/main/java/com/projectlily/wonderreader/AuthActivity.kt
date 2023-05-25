@@ -47,7 +47,6 @@ sealed class AuthScreen(val route: String) {
 
 @Composable
 fun AuthScreen(modifier: Modifier = Modifier, content: @Composable() () -> Unit) {
-
     Surface(
         modifier = modifier
             .fillMaxSize()
