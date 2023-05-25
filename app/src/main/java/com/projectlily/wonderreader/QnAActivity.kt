@@ -27,6 +27,7 @@ fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
             data = it
         })
     }
+
     navigation(startDestination = Screen.QnA.route, route="QnA_Root") {
         composable(Screen.AddQnA.route) {
             ScaffoldScreen(navController) {

@@ -34,9 +34,8 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
 
 @Composable
 fun ScaffoldScreen(
-        navController: NavController,
-        content: @Composable (Modifier) -> Unit,
-
+    navController: NavController,
+    content: @Composable (Modifier) -> Unit
 ) {
     Scaffold(
             topBar = { TopBar(navController, screenItems, navBarItems) },
