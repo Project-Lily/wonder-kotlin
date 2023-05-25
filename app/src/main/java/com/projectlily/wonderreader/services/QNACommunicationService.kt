@@ -16,6 +16,7 @@ import android.os.IBinder
 import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.LinkedList
 import java.util.PriorityQueue
 import java.util.Queue
 import java.util.UUID
@@ -46,7 +47,7 @@ class QNACommunicationService : Service() {
 
     // TODO: This does not support multiple BT devices!
     private val packageBuilder: Vector<Byte> = Vector()
-    private val writeQueue: Queue<String> = PriorityQueue()
+    private val writeQueue: Queue<String> = LinkedList()
 
     private val btIntentFilter = IntentFilter().apply {
         addAction(BLEService.GATT_CONNECTED)
@@ -215,7 +216,7 @@ class QNACommunicationService : Service() {
                     if (i + 1 == chunks) {
                         // If this is the last packet
                         // Add a null terminator
-                        writeQueue.add(question.substring(i * WRITE_CHUNK_SIZE) + '\u0000')
+                        writeQueue.add(question.substring(i * WRITE_CHUNK_SIZE) + '\u0001')
                     } else {
                         writeQueue.add(
                             question.substring(
@@ -233,7 +234,9 @@ class QNACommunicationService : Service() {
                         BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                     )
                 } else {
-                    characteristic.value = writeQueue.remove().toByteArray(Charsets.UTF_8)
+                    val data = writeQueue.remove()
+                    Log.i(TAG, "Writing data: $data")
+                    characteristic.value = data.toByteArray(Charsets.UTF_8)
                     gatt.writeCharacteristic(characteristic)
                 }
             }
