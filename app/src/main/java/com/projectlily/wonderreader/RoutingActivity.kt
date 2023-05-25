@@ -129,7 +129,7 @@ fun MainApp() {
 
         NavHost(
             navController,
-            startDestination = "home_root",
+            startDestination = "auth",
         ) {
             homeNavGraph(navController)
             authNavGraph(navController)

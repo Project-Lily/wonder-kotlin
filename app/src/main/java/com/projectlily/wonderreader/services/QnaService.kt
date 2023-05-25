@@ -52,7 +52,7 @@ class QnaService {
             val ref = getQnaRef();
             val output = mutableListOf<QnA>();
             ref.get().addOnSuccessListener {
-                if (it != null) {
+                if (it.data?.get(categoryName) != null) {
                     var questionList = JSONArray(it.data?.get(categoryName).toString())
                     Log.e("yabe", questionList.toString())
                     for (i in 0 until questionList.length()) {
@@ -64,6 +64,7 @@ class QnaService {
                     }
                     onSuccessListener(output)
                 }
+                onSuccessListener(output)
             }.addOnFailureListener(onFailureListener)
         }
     }

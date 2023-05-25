@@ -31,33 +31,30 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.QnaService
 import com.projectlily.wonderreader.services.toastErrorHandler
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
-
-
-
 @Composable
-fun LoginForm() {
+fun LoginForm(navController: NavController) {
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
     var isError by rememberSaveable{ mutableStateOf(false) }
 
-   TextField(
+    OutlinedTextField(
         value = email,
         onValueChange = {
             email = it
         },
+        placeholder = { Text(text = "Email") },
         label = { Text(text = "Email") },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         isError = isError,
-
-
    )
     Spacer(Modifier.height(20.dp))
     TextField(
@@ -65,6 +62,7 @@ fun LoginForm() {
         onValueChange = {
             password = it
         },
+        placeholder = { Text(text = "Password") },
         label = { Text(text = "Password") },
         singleLine = true,
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
@@ -86,7 +84,7 @@ fun LoginForm() {
                 AuthService.login(
                     email, password,
                     onSuccess = {
-    //                  TODO: Validation here
+                        navController.navigate("home_root")
                         Log.e("yabe", "${AuthService.auth.currentUser?.email}")
     //                  TODO: Navigation here
                     },
@@ -104,9 +102,8 @@ fun LoginForm() {
                 AuthService.register(
                     email, password,
                     onSuccess = {
-                        //                  TODO: Validation here
+                        navController.navigate("home_root")
                         Log.e("yabe", "${AuthService.auth.currentUser?.email}")
-                        //                  TODO: Navigate to other page here
                     },
                     onFailure = toastErrorHandler(context)
                 )
@@ -124,17 +121,4 @@ fun LoginForm() {
         onValidate = {
             QnaService.getAllQnaFromFolder("Math", { Log.e("yabe", it.toString()) })
         })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginPreview(modifier: Modifier = Modifier) {
-    WonderReaderTheme {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(bottom = 16.dp),
-        ) {
-            LoginForm()
-        }
-    }
 }

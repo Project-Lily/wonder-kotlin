@@ -28,10 +28,10 @@ import com.projectlily.wonderreader.ui.components.RegisterForm
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(startDestination = "login", route="auth") {
         composable(AuthScreen.Login.route) { AuthScreen {
-            LoginForm()
+            LoginForm(navController)
         }}
         composable(AuthScreen.Register.route) { AuthScreen {
-            RegisterForm()
+            RegisterForm(navController)
         }}
     }
 }
