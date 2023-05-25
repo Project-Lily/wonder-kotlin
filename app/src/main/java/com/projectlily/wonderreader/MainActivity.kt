@@ -14,6 +14,10 @@ import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
@@ -24,8 +28,6 @@ import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
 import com.projectlily.wonderreader.ui.screens.AddQnAScreen
 import com.projectlily.wonderreader.ui.screens.HomeScreen
-import com.projectlily.wonderreader.ui.screens.QnAScreen
-import com.projectlily.wonderreader.ui.screens.SendToDeviceScreen
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -64,6 +66,7 @@ sealed class Screen(
 
     object AddQnA : Screen("Add QnA", R.string.add_qna)
     object SendToDevice : Screen("Send To Device", R.string.send_to_device)
+    object FolderMath : Screen("Math", R.string.math)
 }
 
 val screenItems = listOf(
@@ -82,10 +85,16 @@ val navBarItems = listOf(
     Screen.Auth
 )
 
+class QnAChosen {
+    var chosenItemIndex: Int by mutableStateOf(-1)
+    var chosenItemCategory: String by mutableStateOf("")
+}
+
 @Composable
 fun MainApp() {
     WonderReaderTheme {
         val navController = rememberNavController()
+        val qnaState = remember { QnAChosen() }
 
         Scaffold(
             topBar = { TopBar(navController, screenItems, navBarItems) },
@@ -97,11 +106,10 @@ fun MainApp() {
                 Modifier.padding(padding)
             ) {
                 composable(Screen.Home.route) { HomeScreen() }
-                composable(Screen.QnA.route) { QnAScreen() }
                 composable(Screen.Debug.route) { DebugScreen() }
                 composable(Screen.Auth.route) { AuthScreen() }
                 composable(Screen.AddQnA.route) { AddQnAScreen() }
-                composable(Screen.SendToDevice.route) { SendToDeviceScreen() }
+                qnaNavGraph(navController, qnaState)
             }
         }
     }

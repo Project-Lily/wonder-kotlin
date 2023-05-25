@@ -10,11 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.projectlily.wonderreader.QnAChosen
+import com.projectlily.wonderreader.SampleData
 
 @Composable
-fun SendToDeviceScreen(modifier: Modifier = Modifier) {
+fun SendToDeviceScreen(qnAChosen: QnAChosen) {
+    val data = SampleData.QnASample[qnAChosen.chosenItemIndex]
+
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(top = 12.dp),
         color = MaterialTheme.colorScheme.background
@@ -22,7 +26,7 @@ fun SendToDeviceScreen(modifier: Modifier = Modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Lorem ipsum...")
+            Text(text = "Question: ${data.question}\nAnswer: ${data.answer}\n")
         }
     }
 }
