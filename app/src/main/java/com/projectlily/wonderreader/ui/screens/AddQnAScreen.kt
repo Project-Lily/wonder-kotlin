@@ -1,5 +1,6 @@
 package com.projectlily.wonderreader.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import com.projectlily.wonderreader.ui.components.QnAForm
 
 @Composable
 fun AddQnAScreen(modifier: Modifier = Modifier) {
+    Log.e("yabe", "yabe")
     Surface(
         modifier = modifier
             .fillMaxSize()

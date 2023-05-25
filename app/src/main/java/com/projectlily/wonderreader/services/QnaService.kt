@@ -2,7 +2,6 @@ package com.projectlily.wonderreader.services
 
 import android.content.res.Resources.NotFoundException
 import android.util.Log
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
