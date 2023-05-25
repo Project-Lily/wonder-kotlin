@@ -12,10 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.QnAChosen
 import com.projectlily.wonderreader.SampleData
+import com.projectlily.wonderreader.types.QnA
 
 @Composable
-fun SendToDeviceScreen(qnAChosen: QnAChosen) {
-    val data = SampleData.QnASample[qnAChosen.chosenItemIndex]
+fun SendToDeviceScreen(qnAChosen: QnAChosen, data: MutableList<QnA>) {
+    val data = data[qnAChosen.chosenItemIndex]
 
     Surface(
         modifier = Modifier

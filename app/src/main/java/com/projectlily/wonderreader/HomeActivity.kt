@@ -15,6 +15,7 @@ import com.projectlily.wonderreader.ui.screens.AddQnAScreen
 import com.projectlily.wonderreader.ui.screens.HomeScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
+//    Not very dry but then again NavHost can't be nested so here we are
     navigation(startDestination=Screen.Home.route, route="home_root") {
         composable(Screen.Home.route) {
             ScaffoldScreen(navController) {
@@ -30,7 +31,6 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
         qnaNavGraph(navController)
     }
 }
-
 
 @Composable
 fun ScaffoldScreen(

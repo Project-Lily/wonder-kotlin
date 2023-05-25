@@ -1,47 +1,47 @@
 package com.projectlily.wonderreader
 
-import com.projectlily.wonderreader.ui.components.QnAData
+import com.projectlily.wonderreader.types.QnA
 
 
 object SampleData {
     val QnASample = listOf(
-        QnAData(
+        QnA(
             question = "Gini loh",
             answer = "Ya gitu"
         ),
-        QnAData(
+        QnA(
             question = "Dog",
             answer = "Cat"
         ),
-        QnAData(
+        QnA(
             question = "Sample 3",
             answer = "Yes nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 4",
             answer = "Indeed nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 5",
             answer = "Definitely nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 6",
             answer = "Certainly nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 7",
             answer = "Nicely nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 8",
             answer = "Absolutely nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 9",
             answer = "Of course nice sample"
         ),
-        QnAData(
+        QnA(
             question = "Sample 10",
             answer = "Insane nice sample"
         ),
