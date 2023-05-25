@@ -8,4 +8,5 @@
     <string name="auth">Auth</string>
     <string name="add_qna">Add QnA</string>
     <string name="send_to_device">Send To Device</string>
+    <string name="math">Math</string>
 </resources>

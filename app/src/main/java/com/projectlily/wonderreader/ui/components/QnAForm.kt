@@ -19,7 +19,8 @@ import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class QnAState {
     val options = listOf("Math", "Language", "Science", "Social Science")
-    var folder: String by mutableStateOf(options[0])
+    
+    var category: String by mutableStateOf(options[0])
     var question: String by mutableStateOf("")
     var answer: String by mutableStateOf("")
 }
@@ -31,8 +32,8 @@ fun QnAForm() {
 
     Dropdown(
         options = formState.options,
-        selectedText = formState.folder,
-        onChange = { formState.folder = it }
+        selectedText = formState.category,
+        onChange = { formState.category = it }
     )
     Form(
         name = "Question",
@@ -51,7 +52,7 @@ fun QnAForm() {
         onValidate = {
             Toast.makeText(
                 context,
-                "Folder: ${formState.folder}\nQuestion: ${formState.question} | Answer: ${formState.answer}",
+                "Category: ${formState.category}\nQuestion: ${formState.question} | Answer: ${formState.answer}",
                 Toast.LENGTH_SHORT
             ).show()
         })

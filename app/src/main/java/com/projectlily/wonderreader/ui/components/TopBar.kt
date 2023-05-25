@@ -1,6 +1,10 @@
 package com.projectlily.wonderreader.ui.components
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -13,12 +17,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.projectlily.wonderreader.Screen
 
 @Composable
-fun TopBar(navController: NavController, modifier: Modifier = Modifier) {
+fun TopBar(
+    navController: NavController,
+    screenItems: List<Screen>,
+    navBarItems: List<Screen>,
+    modifier: Modifier = Modifier
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
+    val currentScreen = screenItems.find { it.route == currentDestination }
+    val isNavBarItem = navBarItems.contains(currentScreen)
 
     CenterAlignedTopAppBar(
         title = {
@@ -31,6 +43,17 @@ fun TopBar(navController: NavController, modifier: Modifier = Modifier) {
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.headlineMedium,
                 )
+            }
+        },
+        navigationIcon = {
+            if (!isNavBarItem) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Navigate back",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         },
         scrollBehavior = scrollBehavior,

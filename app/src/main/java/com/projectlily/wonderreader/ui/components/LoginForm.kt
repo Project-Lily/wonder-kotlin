@@ -1,7 +1,6 @@
 package com.projectlily.wonderreader.ui.components
 
-import android.content.Context
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -27,6 +26,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.projectlily.wonderreader.services.AuthService
+import com.projectlily.wonderreader.services.QnaService
+import com.projectlily.wonderreader.services.toastErrorHandler
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class LoginState() {
@@ -74,11 +76,38 @@ fun LoginForm() {
     SendFormButton(
         text = "Login",
         onValidate = {
-            Toast.makeText(
-                context,
-                "Question: ${formState.email}\nAnswer: ${formState.password}",
-                Toast.LENGTH_SHORT
-            ).show()
+            AuthService.login(
+                formState.email, formState.password,
+                onSuccess = {
+//                  TODO: Validation here
+                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+//                  TODO: Navigation here
+                },
+                onFailure = toastErrorHandler(context)
+            )
+        })
+    SendFormButton(
+        text = "Register",
+        onValidate = {
+            AuthService.register(
+                formState.email, formState.password,
+                onSuccess = {
+//                  TODO: Validation here
+                    Log.e("yabe", "${AuthService.auth.currentUser?.email}")
+//                  TODO: Navigate to other page here
+                },
+                onFailure = toastErrorHandler(context)
+            )
+        })
+    SendFormButton(
+        text = "Qna Add",
+        onValidate = {
+            QnaService.addQuestionAndAnswer(formState.email, formState.password, "Math")
+        })
+    SendFormButton(
+        text = "Qna Get",
+        onValidate = {
+            QnaService.getAllQnaFromFolder("Math", { Log.e("yabe", it.toString()) })
         })
 }
 
