@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.QnaService
 import com.projectlily.wonderreader.types.QnA
 import com.projectlily.wonderreader.ui.screens.AddQnAScreen
@@ -19,10 +20,13 @@ class QnAChosen {
 }
 fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
     val chosenQna = QnAChosen() // TODO
-    var data = mutableListOf<QnA>();
-    QnaService.getAllQnaFromFolder("Math", onSuccessListener = {
-        data = it;
-    })
+    var data = mutableListOf<QnA>()
+
+    if (AuthService.auth.currentUser != null) {
+        QnaService.getAllQnaFromFolder("Math", onSuccessListener = {
+            data = it
+        })
+    }
     navigation(startDestination = Screen.QnA.route, route="QnA_Root") {
         composable(Screen.AddQnA.route) {
             ScaffoldScreen(navController) {
