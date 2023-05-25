@@ -25,6 +25,8 @@ import java.util.function.Consumer
 @SuppressLint("MissingPermission")
 class QNACommunicationService : Service() {
     companion object {
+        const val QNA_READY = "wonderreader.ready"
+
         private val QNA_SERVICE_UUID = UUID.fromString("0000abab-0000-1000-8000-00805f9b34fb")
         private val QNA_CHARACTERISTIC_TEST_UUID =
             UUID.fromString("0000bbbb-0000-1000-8000-00805f9b34fb")
@@ -98,6 +100,8 @@ class QNACommunicationService : Service() {
                             "Success Indicate ($address) " + (gatt.writeDescriptor(descriptor) && indicateResult)
                         )
                     }
+                    val qnaReadyIntent = Intent(QNA_READY)
+                    sendBroadcast(qnaReadyIntent)
                 }
 
                 BLEService.GATT_NOTIFICATION -> {
