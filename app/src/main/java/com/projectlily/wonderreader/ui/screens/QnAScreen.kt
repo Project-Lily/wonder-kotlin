@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.QnAChosen
-import com.projectlily.wonderreader.SampleData
 import com.projectlily.wonderreader.types.QnA
 import com.projectlily.wonderreader.ui.components.QnAList
 
@@ -28,9 +27,3 @@ fun QnAScreen(qnaState: QnAChosen, data: MutableList<QnA>, modifier: Modifier = 
             onClick = { qnaState.chosenItemIndex = it })
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun QnAPreview() {
-//    QnAScreen()
-//}

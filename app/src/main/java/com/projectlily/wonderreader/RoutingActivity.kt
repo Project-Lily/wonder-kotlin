@@ -75,11 +75,7 @@ sealed class Screen(
             "Add QnA", Icons.Filled.Add, "Add QnA"
         )
 
-    object QnA :
-        Screen(
-            "QnA", R.string.qna, Icons.Default.QuestionAnswer,
-            "Send", Icons.Filled.Send, "Send To Device"
-        )
+    object QnA : Screen("QnA", R.string.qna, Icons.Default.QuestionAnswer)
 
     object Debug : Screen("Debug", R.string.debug, Icons.Default.Build)
 
@@ -88,7 +84,38 @@ sealed class Screen(
 
     object AddQnA : Screen("Add QnA", R.string.add_qna)
     object SendToDevice : Screen("Send To Device", R.string.send_to_device)
-    object FolderMath : Screen("Math", R.string.math)
+    object FolderMath : Screen(
+        "Math",
+        R.string.math,
+        action = "Send",
+        actionButton = Icons.Filled.Send,
+        actionButtonDestination = "Send To Device"
+    )
+
+    object FolderLanguage : Screen(
+        "Language",
+        R.string.math,
+        action = "Send",
+        actionButton = Icons.Filled.Send,
+        actionButtonDestination = "Send To Device"
+    )
+
+    object FolderScience : Screen(
+        "Science",
+        R.string.math,
+        action = "Send",
+        actionButton = Icons.Filled.Send,
+        actionButtonDestination = "Send To Device"
+    )
+
+    object FolderSocialScience : Screen(
+        "Social Science",
+        R.string.math,
+        action = "Send",
+        actionButton = Icons.Filled.Send,
+        actionButtonDestination = "Send To Device"
+    )
+
 }
 
 val screenItems = listOf(
@@ -97,7 +124,11 @@ val screenItems = listOf(
     Screen.Debug,
     Screen.Auth,
     Screen.AddQnA,
-    Screen.SendToDevice
+    Screen.SendToDevice,
+    Screen.FolderMath,
+    Screen.FolderLanguage,
+    Screen.FolderScience,
+    Screen.FolderSocialScience
 )
 
 val navBarItems = listOf(

@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import com.projectlily.wonderreader.R
 import com.projectlily.wonderreader.types.QnA
 
-
 @Composable
 fun QnAList(
     data: List<QnA>,

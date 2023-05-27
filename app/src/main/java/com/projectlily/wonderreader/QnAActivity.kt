@@ -11,6 +11,7 @@ import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.QnaService
 import com.projectlily.wonderreader.types.QnA
 import com.projectlily.wonderreader.ui.screens.AddQnAScreen
+import com.projectlily.wonderreader.ui.screens.FolderScreen
 import com.projectlily.wonderreader.ui.screens.QnAScreen
 import com.projectlily.wonderreader.ui.screens.SendToDeviceScreen
 
@@ -18,14 +19,32 @@ class QnAChosen {
     var chosenItemIndex: Int by mutableStateOf(-1)
     var chosenItemCategory: String by mutableStateOf("")
 }
+
 fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
     val chosenQna = QnAChosen() // TODO
-    var data = mutableListOf<QnA>()
+    var dataMath = mutableListOf<QnA>()
+    var dataLanguage = mutableListOf<QnA>()
+    var dataScience = mutableListOf<QnA>()
+    var dataSocialScience = mutableListOf<QnA>()
+//    var data = mutableListOf<QnA>()
 
     if (AuthService.auth.currentUser != null) {
         QnaService.getAllQnaFromFolder("Math", onSuccessListener = {
-            data = it
+            dataMath = it
         })
+        QnaService.getAllQnaFromFolder("Language", onSuccessListener = {
+            dataLanguage = it
+        })
+        QnaService.getAllQnaFromFolder("Science", onSuccessListener = {
+            dataScience = it
+        })
+        QnaService.getAllQnaFromFolder("Social Science", onSuccessListener = {
+            dataSocialScience = it
+        })
+
+//        QnaService.getAllQnaFromFolder(chosenQna.chosenItemCategory, onSuccessListener = {
+//            data = it // TODO: Not in the right order to get data
+//        })
     }
 
     navigation(startDestination = Screen.QnA.route, route="QnA_Root") {
@@ -36,11 +55,43 @@ fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
         }
         composable(Screen.QnA.route) {
             ScaffoldScreen(navController) {
-                QnAScreen(chosenQna, data, it)
+//                QnAScreen(chosenQna, data, it)
+                FolderScreen(chosenQna, navController, it)
+            }
+        }
+        composable(Screen.FolderMath.route) {
+            ScaffoldScreen(navController) {
+//                FolderScreen(chosenQna, navController, it)
+                QnAScreen(chosenQna, dataMath, it)
+//                QnAScreen(chosenQna, data, it)
+            }
+        }
+        composable(Screen.FolderLanguage.route) {
+            ScaffoldScreen(navController) {
+//                FolderScreen(chosenQna, navController, it)
+                QnAScreen(chosenQna, dataLanguage, it)
+//                QnAScreen(chosenQna, data, it)
+            }
+        }
+        composable(Screen.FolderScience.route) {
+            ScaffoldScreen(navController) {
+//                FolderScreen(chosenQna, navController, it)
+                QnAScreen(chosenQna, dataScience, it)
+//                QnAScreen(chosenQna, data, it)
+            }
+        }
+        composable(Screen.FolderSocialScience.route) {
+            ScaffoldScreen(navController) {
+//                FolderScreen(chosenQna, navController, it)
+                QnAScreen(chosenQna, dataSocialScience, it)
+//                QnAScreen(chosenQna, data, it)
             }
         }
         composable(Screen.SendToDevice.route) {
-            SendToDeviceScreen(chosenQna, data)
+            ScaffoldScreen(navController) {
+                SendToDeviceScreen(chosenQna, dataMath) // TODO: Change to access appropriate category data
+//                SendToDeviceScreen(chosenQna, data)
+            }
         }
     }
 }
