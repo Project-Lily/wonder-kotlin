@@ -11,12 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.projectlily.wonderreader.QnAChosen
 import com.projectlily.wonderreader.SampleData
 import com.projectlily.wonderreader.ui.components.Folder
 
 @Composable
-fun FolderScreen(qnaState: QnAChosen, navController: NavController, modifier: Modifier = Modifier) {
+fun FolderScreen(navController: NavController, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -28,7 +27,6 @@ fun FolderScreen(qnaState: QnAChosen, navController: NavController, modifier: Mo
         ) {
             itemsIndexed(items = SampleData.folders) { _, item ->
                 Folder(name = item.name, onClick = {
-                    qnaState.chosenItemCategory = it
                     navController.navigate(item.name)
                 }
                 )

@@ -1,5 +1,6 @@
 package com.projectlily.wonderreader.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -12,7 +13,9 @@ import com.projectlily.wonderreader.types.QnA
 import com.projectlily.wonderreader.ui.components.QnAList
 
 @Composable
-fun QnAScreen(qnaState: QnAChosen, data: MutableList<QnA>, modifier: Modifier = Modifier) {
+fun QnAScreen(qnaState: QnAChosen, data: MutableList<QnA>, category: String, modifier: Modifier = Modifier) {
+    qnaState.chosenItemCategory = category
+    qnaState.chosenItemIndex = -1
 
     Surface(
         modifier = modifier
@@ -24,6 +27,14 @@ fun QnAScreen(qnaState: QnAChosen, data: MutableList<QnA>, modifier: Modifier = 
             data = data,
             isChoosing = true,
             chosenIndex = qnaState.chosenItemIndex,
-            onClick = { qnaState.chosenItemIndex = it })
+            onClick = { index, question, answer ->
+                qnaState.chosenItemIndex = index
+                qnaState.chosenItemQuestion = question
+                qnaState.chosenItemAnswer = answer
+                Log.d("Debuging", qnaState.chosenItemIndex.toString())
+                Log.d("Debuging", qnaState.chosenItemQuestion)
+                Log.d("Debuging", qnaState.chosenItemAnswer)
+            }
+        )
     }
 }

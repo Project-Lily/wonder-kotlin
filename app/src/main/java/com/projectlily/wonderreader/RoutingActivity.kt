@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.projectlily.wonderreader.services.AuthService
 import com.projectlily.wonderreader.services.QNACommunicationService
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 import org.json.JSONObject
@@ -142,10 +143,11 @@ val navBarItems = listOf(
 fun MainApp() {
     WonderReaderTheme {
         val navController = rememberNavController()
+        val startDestination = if (AuthService.auth.currentUser != null) "home_root" else "auth"
 
         NavHost(
             navController,
-            startDestination = "auth",
+            startDestination = startDestination,
         ) {
             homeNavGraph(navController)
             authNavGraph(navController)

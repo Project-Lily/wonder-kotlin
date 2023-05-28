@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Folder(name: String, onClick: (String) -> Unit, modifier: Modifier = Modifier) {
+fun Folder(name: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         modifier = modifier.padding(8.dp)
@@ -38,7 +38,7 @@ fun Folder(name: String, onClick: (String) -> Unit, modifier: Modifier = Modifie
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
-                IconButton(onClick = { onClick(name) }) {
+                IconButton(onClick = onClick ) {
                     Icon(
                         imageVector = Icons.Filled.ArrowRight,
                         contentDescription = "Go to $name folder"

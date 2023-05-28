@@ -39,7 +39,7 @@ fun QnAList(
     modifier: Modifier = Modifier,
     isChoosing: Boolean = false,
     chosenIndex: Int = -1,
-    onClick: (Int) -> Unit = {}
+    onClick: (index: Int, question: String, answer: String) -> Unit
 ) {
 
     LazyColumn(
@@ -51,7 +51,7 @@ fun QnAList(
                 question = data.question,
                 answer = data.answer,
                 isChoosing = isChoosing,
-                chosenItemIndex = chosenIndex + 1,
+                chosenItemIndex = chosenIndex,
                 onClick = onClick
             )
         }
@@ -65,7 +65,7 @@ private fun QnAElement(
     answer: String,
     isChoosing: Boolean,
     chosenItemIndex: Int = -1,
-    onClick: (Int) -> Unit = {}
+    onClick: (index: Int, question: String, answer: String) -> Unit
 ) {
     val isChosenCheck = chosenItemIndex == index
     val border = if (isChosenCheck) BorderStroke(4.dp, Color.Black) else null
@@ -74,7 +74,7 @@ private fun QnAElement(
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
             onClick = {
-                onClick(index - 1)
+                onClick(index, question, answer)
             },
             border = border,
             modifier = Modifier.padding(8.dp)
