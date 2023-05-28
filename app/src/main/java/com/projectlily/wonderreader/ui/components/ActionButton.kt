@@ -1,5 +1,6 @@
 package com.projectlily.wonderreader.ui.components
 
+import android.util.Log
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ fun ActionButton(
     val currentDestination = navBackStackEntry?.destination?.route
     val currentScreen = items.find { it.route == currentDestination }
     val expanded = currentScreen?.action != ""
+    Log.d("Debuging", "Fab called")
 
     if (expanded) {
         ExtendedFloatingActionButton(
@@ -43,9 +45,6 @@ fun ActionButton(
                         // the it.actionButtonDestination, avoiding multiple copies on the top of the
                         // back stack
                         launchSingleTop = true
-
-                        // Restore state when reselecting a previously selected item
-                        restoreState = true
                     }
                 }
             }
