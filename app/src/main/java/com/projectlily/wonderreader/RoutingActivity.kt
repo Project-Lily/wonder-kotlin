@@ -135,7 +135,6 @@ val screenItems = listOf(
 val navBarItems = listOf(
     Screen.Home,
     Screen.QnA,
-    Screen.Debug,
     Screen.Auth
 )
 

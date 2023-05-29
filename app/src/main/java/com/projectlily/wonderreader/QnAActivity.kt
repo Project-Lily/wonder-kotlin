@@ -1,9 +1,11 @@
 package com.projectlily.wonderreader
 
 import android.util.Log
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -39,7 +41,7 @@ fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
         }
     }
 
-    navigation(startDestination = Screen.QnA.route, route="QnA_Root") {
+    navigation(startDestination = Screen.QnA.route, route = "QnA_Root") {
         composable(Screen.AddQnA.route) {
             ScaffoldScreen(navController) {
                 AddQnAScreen(it)
@@ -47,12 +49,12 @@ fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
         }
         composable(Screen.QnA.route) {
             ScaffoldScreen(navController) {
-                FolderScreen(navController, it)
+                FolderScreen(navController, it.padding(top = 12.dp))
             }
         }
         composable(Screen.FolderMath.route) {
             ScaffoldScreen(navController) {
-                QnAScreen(chosenQna, dataMath,"Math", it)
+                QnAScreen(chosenQna, dataMath, "Math", it)
             }
         }
         composable(Screen.FolderLanguage.route) {

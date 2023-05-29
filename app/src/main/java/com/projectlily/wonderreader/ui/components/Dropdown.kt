@@ -29,6 +29,10 @@ fun Dropdown(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var actualText = selectedText
+    if (selectedText == "SocialScience") {
+        actualText = "Social Science"
+    }
 
     Column(modifier.padding(top = 4.dp)) {
         Text(
@@ -50,7 +54,7 @@ fun Dropdown(
         ) {
             TextField(
                 readOnly = true,
-                value = selectedText,
+                value = actualText,
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
