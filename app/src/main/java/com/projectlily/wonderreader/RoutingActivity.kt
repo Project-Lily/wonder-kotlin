@@ -1,14 +1,18 @@
 package com.projectlily.wonderreader
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -19,6 +23,7 @@ import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.projectlily.wonderreader.services.AuthService
@@ -52,8 +57,52 @@ class MainActivity : ComponentActivity() {
         setContent {
             MainApp()
         }
+
+        // Bluetooth Permissions
+        // For this, I thank Bolt UIX. But modified
+        // https://stackoverflow.com/a/69972855
+        val sdkPermissions =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                arrayOf(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_ADMIN,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            } else {
+                arrayOf(
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            }
+
+        val requestMultiplePermissions =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                permissions.entries.forEach {
+                    Log.d("BT Service", "${it.key} = ${it.value}")
+                }
+            }
+
         val gattIntent = Intent(this, QNACommunicationService::class.java)
-        bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+        when (ContextCompat.checkSelfPermission(
+            this,
+            sdkPermissions[0]
+        )) {
+            PackageManager.PERMISSION_GRANTED
+            -> {
+                Log.d("BLE Time", "Permission granted")
+                bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                Log.d("BLE Time", "bindService() called")
+            }
+
+            PackageManager.PERMISSION_DENIED -> {
+                Log.d("BLE Time", "Permission requested")
+                requestMultiplePermissions.launch(
+                    sdkPermissions
+                )
+            }
+        }
     }
 
     override fun onDestroy() {
