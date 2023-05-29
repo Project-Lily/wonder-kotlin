@@ -24,25 +24,19 @@ class QnAChosen {
 }
 
 fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
-    val chosenQna = QnAChosen() // TODO
+    val chosenQna = QnAChosen()
     var dataMath = mutableListOf<QnA>()
     var dataLanguage = mutableListOf<QnA>()
     var dataScience = mutableListOf<QnA>()
     var dataSocialScience = mutableListOf<QnA>()
 
-    if (AuthService.auth.currentUser != null) {
-        QnaService.getAllQnaFromFolder("Math", onSuccessListener = {
-            dataMath = it
-        })
-        QnaService.getAllQnaFromFolder("Language", onSuccessListener = {
-            dataLanguage = it
-        })
-        QnaService.getAllQnaFromFolder("Science", onSuccessListener = {
-            dataScience = it
-        })
-        QnaService.getAllQnaFromFolder("Social Science", onSuccessListener = {
-            dataSocialScience = it
-        })
+    if (AuthService.auth.currentUser != null && QnaService.getListenerListLength() == 0) {
+        QnaService.listenToQna { qnaList ->
+            dataMath = QnaService.parseDtoToQna(qnaList?.Math)
+            dataLanguage = QnaService.parseDtoToQna(qnaList?.Language)
+            dataScience = QnaService.parseDtoToQna(qnaList?.Science)
+            dataSocialScience = QnaService.parseDtoToQna(qnaList?.SocialScience)
+        }
     }
 
     navigation(startDestination = Screen.QnA.route, route="QnA_Root") {

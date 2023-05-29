@@ -21,7 +21,6 @@ fun ActionButton(
     val currentDestination = navBackStackEntry?.destination?.route
     val currentScreen = items.find { it.route == currentDestination }
     val expanded = currentScreen?.action != ""
-    Log.d("Debuging", "Fab called")
 
     if (expanded) {
         ExtendedFloatingActionButton(

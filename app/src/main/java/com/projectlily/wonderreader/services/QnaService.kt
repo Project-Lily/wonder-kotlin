@@ -7,19 +7,22 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.projectlily.wonderreader.types.QnA
-import org.json.JSONArray
+import com.projectlily.wonderreader.types.QnaJsonDTO
+import com.projectlily.wonderreader.types.QnaListDTO
 
 class QnaService {
     companion object {
-        private var db: FirebaseFirestore = Firebase.firestore;
         private var auth: FirebaseAuth = Firebase.auth;
-
+        private val listenerList: ArrayList<ListenerRegistration> = ArrayList()
         private fun getQnaRef(): DocumentReference {
-            var uid: String? = auth.uid
+            val db: FirebaseFirestore = Firebase.firestore;
+            val uid: String? = auth.uid
             if (uid == null) {
                 Log.e("yabe", "User not logged in")
                 throw NotFoundException("User id not found")
@@ -35,37 +38,44 @@ class QnaService {
                 categoryName to FieldValue.arrayUnion(qnaObject)
             )
 
-            Log.i("yabe", value.toString())
-
             ref.set(value, SetOptions.merge()).addOnFailureListener { exception ->
                 Log.e("yabe", "Failed with ", exception)
             }
         }
 
-        fun getAllQnaFromFolder(
-            categoryName: String,
-            onSuccessListener: (MutableList<QnA>) -> Unit,
-            onFailureListener: (Exception) -> Unit = { exception ->
-                Log.d("yabe", "get failed with ", exception)
-            }
+        fun getListenerListLength(): Int {
+            return listenerList.size
+        }
+
+        fun listenToQna(
+            onUpdate: (QnaListDTO?) -> Unit,
         ) {
             val ref = getQnaRef();
-            val output = mutableListOf<QnA>();
-            ref.get().addOnSuccessListener {
-                if (it.data?.get(categoryName) != null) {
-                    var questionList = JSONArray(it.data?.get(categoryName).toString())
-                    Log.e("yabe", questionList.toString())
-                    for (i in 0 until questionList.length()) {
-                        val qna = questionList.getJSONObject(i);
-                        val question = qna.get("question") as String
-                        val answer = qna.get("answer") as String
-
-                        output.add(QnA(question, answer))
-                    }
-                    onSuccessListener(output)
+            val listener = ref.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.d("yabe", "Listen to qna failed")
                 }
-                onSuccessListener(output)
-            }.addOnFailureListener(onFailureListener)
+
+                if (snapshot != null && snapshot.exists()) {
+                    val questionList = snapshot.toObject<QnaListDTO>()
+                    Log.d("yoro", questionList.toString())
+
+                    onUpdate(questionList)
+                } else {
+                    Log.d("yoro", "QnA is empty")
+                }
+            }
+            listenerList.add(listener);
+        }
+
+        fun parseDtoToQna(qnaJsonDTO: List<QnaJsonDTO>?): MutableList<QnA> {
+            val output = mutableListOf<QnA>()
+            if (qnaJsonDTO == null) return output
+            for (i in qnaJsonDTO) {
+                if (i.question == null || i.answer == null) continue
+                output.add(QnA(i.question, i.answer))
+            }
+            return output
         }
     }
 }

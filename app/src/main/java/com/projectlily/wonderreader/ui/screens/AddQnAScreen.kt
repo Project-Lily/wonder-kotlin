@@ -14,7 +14,6 @@ import com.projectlily.wonderreader.ui.components.QnAForm
 
 @Composable
 fun AddQnAScreen(modifier: Modifier = Modifier) {
-    Log.e("yabe", "yabe")
     Surface(
         modifier = modifier
             .fillMaxSize()

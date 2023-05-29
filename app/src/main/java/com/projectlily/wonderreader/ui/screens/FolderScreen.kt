@@ -28,8 +28,7 @@ fun FolderScreen(navController: NavController, modifier: Modifier = Modifier) {
             itemsIndexed(items = SampleData.folders) { _, item ->
                 Folder(name = item.name, onClick = {
                     navController.navigate(item.name)
-                }
-                )
+                })
             }
         }
     }

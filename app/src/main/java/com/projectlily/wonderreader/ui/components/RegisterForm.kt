@@ -49,7 +49,6 @@ fun RegisterForm(navController: NavController) {
             AuthService.register(formState.email, formState.password,
                 onSuccess = {
                     navController.navigate("home_root")
-                    Log.e("yabe", "lmao")
                 },
                 onFailure = toastErrorHandler(context)
         )

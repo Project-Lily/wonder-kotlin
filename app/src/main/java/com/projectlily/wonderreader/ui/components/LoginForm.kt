@@ -116,9 +116,4 @@ fun LoginForm(navController: NavController) {
         onValidate = {
             QnaService.addQuestionAndAnswer(email,password, "Math")
         })
-    SendFormButton(
-        text = "Qna Get",
-        onValidate = {
-            QnaService.getAllQnaFromFolder("Math", { Log.e("yabe", it.toString()) })
-        })
 }
