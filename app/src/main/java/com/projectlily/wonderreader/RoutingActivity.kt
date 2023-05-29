@@ -95,7 +95,7 @@ sealed class Screen(
 
     object FolderLanguage : Screen(
         "Language",
-        R.string.math,
+        R.string.language,
         action = "Send",
         actionButton = Icons.Filled.Send,
         actionButtonDestination = "Send To Device"
@@ -103,7 +103,7 @@ sealed class Screen(
 
     object FolderScience : Screen(
         "Science",
-        R.string.math,
+        R.string.science,
         action = "Send",
         actionButton = Icons.Filled.Send,
         actionButtonDestination = "Send To Device"
@@ -111,7 +111,7 @@ sealed class Screen(
 
     object FolderSocialScience : Screen(
         "Social Science",
-        R.string.math,
+        R.string.social_science,
         action = "Send",
         actionButton = Icons.Filled.Send,
         actionButtonDestination = "Send To Device"

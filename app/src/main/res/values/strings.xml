@@ -9,4 +9,7 @@
     <string name="add_qna">Add QnA</string>
     <string name="send_to_device">Send To Device</string>
     <string name="math">Math</string>
+    <string name="language">Language</string>
+    <string name="science">Science</string>
+    <string name="social_science">Social Science</string>
 </resources>
