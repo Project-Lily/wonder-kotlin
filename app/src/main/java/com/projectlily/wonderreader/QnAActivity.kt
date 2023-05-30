@@ -77,7 +77,7 @@ fun NavGraphBuilder.qnaNavGraph(navController: NavController) {
                 Log.d("Debuging", chosenQna.chosenItemIndex.toString())
                 Log.d("Debuging", chosenQna.chosenItemQuestion)
                 Log.d("Debuging", chosenQna.chosenItemAnswer)
-                SendToDeviceScreen(chosenQna.chosenItemQuestion, chosenQna.chosenItemAnswer, it)
+                SendToDeviceScreen(navController, chosenQna.chosenItemQuestion, chosenQna.chosenItemAnswer, it)
             }
         }
     }
