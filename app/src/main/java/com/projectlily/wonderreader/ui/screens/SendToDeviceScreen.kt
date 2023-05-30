@@ -34,15 +34,6 @@ import org.json.JSONObject
 
 private var qnaCommunicationService: QNACommunicationService? = null
 
-class AnswerState() {
-    var answer: String by mutableStateOf("")
-
-        private set
-    fun setAnswer(text: String ){
-        this.answer = text;
-    }
-}
-
 @Composable
 fun SendToDeviceScreen(
     navController: NavController,
@@ -53,13 +44,11 @@ fun SendToDeviceScreen(
     val lifecycle = LocalLifecycleOwner.current
     val context = LocalContext.current
 
-    val state = remember { AnswerState() }
+    var answer by remember { mutableStateOf("") }
 
     fun receiveAnswer(data: JSONObject) {
         Log.d("yabe", data.getString("data"))
         Log.i("Service Test", "Got answer ${data.getJSONObject("data")}")
-
-        state.setAnswer(data.getString("data"))
     }
 
     val btIntentFilter = IntentFilter().apply {
@@ -126,7 +115,7 @@ fun SendToDeviceScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Question: $question\nReal Answer: $realAnswer\n")
-            Text(text = "Question: $question\nAnswer: ${state.answer}\n")
+            Text(text = "Question: $question\nAnswer: ${answer}\n")
         }
     }
 }
