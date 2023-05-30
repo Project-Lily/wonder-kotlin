@@ -26,7 +26,6 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
                 DebugScreen(it)
             }
         }
-
         qnaNavGraph(navController)
     }
 }

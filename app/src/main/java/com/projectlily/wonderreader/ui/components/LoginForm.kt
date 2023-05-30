@@ -111,9 +111,4 @@ fun LoginForm(navController: NavController) {
                 Toast.makeText(context, "Please fill in all the fields", Toast.LENGTH_SHORT).show()
             }
         })
-    SendFormButton(
-        text = "Qna Add",
-        onValidate = {
-            QnaService.addQuestionAndAnswer(email,password, "Math")
-        })
 }

@@ -22,8 +22,6 @@ import com.projectlily.wonderreader.services.QNACommunicationService
 import com.projectlily.wonderreader.ui.components.QnAForm
 import org.json.JSONObject
 
-
-
 @Composable
 fun AddQnAScreen(modifier: Modifier = Modifier) {
     Surface(

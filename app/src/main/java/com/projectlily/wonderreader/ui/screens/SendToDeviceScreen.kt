@@ -19,6 +19,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +27,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.projectlily.wonderreader.services.BLEService
 import com.projectlily.wonderreader.services.QNACommunicationService
@@ -34,6 +34,14 @@ import org.json.JSONObject
 
 private var qnaCommunicationService: QNACommunicationService? = null
 
+class AnswerState() {
+    var answer: String by mutableStateOf("")
+
+        private set
+    fun setAnswer(text: String ){
+        this.answer = text;
+    }
+}
 
 @Composable
 fun SendToDeviceScreen(
@@ -41,14 +49,17 @@ fun SendToDeviceScreen(
     question: String,
     realAnswer: String,
     modifier: Modifier = Modifier,
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
+    val lifecycle = LocalLifecycleOwner.current
     val context = LocalContext.current
-    val answer by remember { mutableStateOf("Hello") }
+
+    val state = remember { AnswerState() }
 
     fun receiveAnswer(data: JSONObject) {
         Log.d("yabe", data.getString("data"))
         Log.i("Service Test", "Got answer ${data.getJSONObject("data")}")
+
+        state.setAnswer(data.getString("data"))
     }
 
     val btIntentFilter = IntentFilter().apply {
@@ -85,7 +96,7 @@ fun SendToDeviceScreen(
     }
 
 
-    DisposableEffect(lifecycleOwner) {
+    DisposableEffect(lifecycle) {
         val gattIntent = Intent(context, QNACommunicationService::class.java)
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
@@ -97,10 +108,10 @@ fun SendToDeviceScreen(
             }
         }
 
-        lifecycleOwner.lifecycle.addObserver(observer)
+        lifecycle.lifecycle.addObserver(observer)
 
         onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
+            lifecycle.lifecycle.removeObserver(observer)
         }
     }
 
@@ -115,7 +126,7 @@ fun SendToDeviceScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Question: $question\nReal Answer: $realAnswer\n")
-            Text(text = "Question: $question\nAnswer: $answer\n")
+            Text(text = "Question: $question\nAnswer: ${state.answer}\n")
         }
     }
 }
