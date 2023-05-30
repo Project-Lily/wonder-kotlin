@@ -13,6 +13,10 @@ class AuthService {
     companion object {
         var auth: FirebaseAuth = Firebase.auth;
 
+        fun logout() {
+            auth.signOut()
+        }
+
         fun login(
             email: String,
             password: String,
