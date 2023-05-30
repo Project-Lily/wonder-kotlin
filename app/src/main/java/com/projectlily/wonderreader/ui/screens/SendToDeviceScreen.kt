@@ -48,10 +48,10 @@ fun SendToDeviceScreen(
     val lifecycle = LocalLifecycleOwner.current
     val context = LocalContext.current
 
-    var answer by remember { mutableStateOf("") }
+    val (answer, setAnswer) = remember { mutableStateOf("") }
 
     fun receiveAnswer(data: JSONObject) {
-        Log.d("yabe", data.getString("data"))
+        setAnswer(data.getString("data"))
         Log.i("Service Test", "Got answer ${data.getString("data")}")
     }
 
@@ -87,7 +87,6 @@ fun SendToDeviceScreen(
             qnaCommunicationService = null
         }
     }
-
 
     DisposableEffect(lifecycle) {
         val gattIntent = Intent(context, QNACommunicationService::class.java)
