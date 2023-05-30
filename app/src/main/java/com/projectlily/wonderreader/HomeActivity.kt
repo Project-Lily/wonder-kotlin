@@ -12,6 +12,7 @@ import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
 import com.projectlily.wonderreader.ui.screens.HomeScreen
+import com.projectlily.wonderreader.ui.screens.ProfileScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
 //    Not very dry but then again NavHost can't be nested so here we are
@@ -24,6 +25,11 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
         composable(Screen.Debug.route) {
             ScaffoldScreen(navController) {
                 DebugScreen(it)
+            }
+        }
+        composable(Screen.Profile.route) {
+            ScaffoldScreen(navController) {
+                ProfileScreen(navController, it)
             }
         }
         qnaNavGraph(navController)

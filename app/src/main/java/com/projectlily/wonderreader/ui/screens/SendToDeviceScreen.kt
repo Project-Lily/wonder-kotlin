@@ -9,8 +9,11 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -89,7 +93,7 @@ fun SendToDeviceScreen(
         val gattIntent = Intent(context, QNACommunicationService::class.java)
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
-                context.bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+                context.bindService(gattIntent, serviceConnection, Context.BIND_AUTO_CREATE)
                 context.registerReceiver(btServiceReceiver, btIntentFilter)
             } else if (event == Lifecycle.Event.ON_STOP) {
                 context.unbindService(serviceConnection)
@@ -112,10 +116,41 @@ fun SendToDeviceScreen(
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Question: $question\nReal Answer: $realAnswer\n")
-            Text(text = "Question: $question\nAnswer: ${answer}\n")
+            Text(
+                text = "Question",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .paddingFromBaseline(bottom = 16.dp)
+                    .padding(horizontal = 16.dp)
+            )
+            Text(text = question, style = MaterialTheme.typography.headlineSmall)
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = "Real Answer",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .paddingFromBaseline(bottom = 16.dp)
+                    .padding(horizontal = 16.dp)
+            )
+            Text(text = realAnswer, style = MaterialTheme.typography.headlineSmall)
+
+            Spacer(Modifier.height(56.dp))
+
+            Text(
+                text = "Wonder Reader Response:",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .paddingFromBaseline(bottom = 16.dp)
+                    .padding(horizontal = 16.dp)
+            )
+            Text(text = answer, style = MaterialTheme.typography.headlineSmall)
         }
     }
 }

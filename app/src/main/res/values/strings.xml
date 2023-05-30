@@ -2,7 +2,7 @@
     <string name="app_name">Wonder Reader</string>
     <string name="home">Home</string>
     <string name="debug">Debug</string>
-    <string name="qna">QnA</string>
+    <string name="qna">Quiz</string>
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>
     <string name="auth">Auth</string>
@@ -12,4 +12,5 @@
     <string name="language">Language</string>
     <string name="science">Science</string>
     <string name="social_science">Social Science</string>
+    <string name="profile">Profile</string>
 </resources>

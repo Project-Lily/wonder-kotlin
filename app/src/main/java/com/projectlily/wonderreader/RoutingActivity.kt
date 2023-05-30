@@ -123,10 +123,9 @@ sealed class Screen(
             "Home", R.string.home, Icons.Default.Home,
             "Add QnA", Icons.Filled.Add, "Add QnA"
         )
-
-    object QnA : Screen("QnA", R.string.qna, Icons.Default.QuestionAnswer)
-
+    object QnA : Screen("Quiz", R.string.qna, Icons.Default.QuestionAnswer)
     object Debug : Screen("Debug", R.string.debug, Icons.Default.Build)
+    object Profile : Screen("Profile", R.string.profile, Icons.Default.AccountBox)
 
     //    This shouldn't be on bottom bar, just here for testing
     object Auth : Screen("Auth", R.string.auth, Icons.Default.AccountBox)
@@ -172,6 +171,7 @@ val screenItems = listOf(
     Screen.QnA,
     Screen.Debug,
     Screen.Auth,
+    Screen.Profile,
     Screen.AddQnA,
     Screen.SendToDevice,
     Screen.FolderMath,
@@ -183,7 +183,7 @@ val screenItems = listOf(
 val navBarItems = listOf(
     Screen.Home,
     Screen.QnA,
-    Screen.Auth
+    Screen.Profile
 )
 
 @Composable
