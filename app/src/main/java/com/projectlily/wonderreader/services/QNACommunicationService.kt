@@ -73,6 +73,7 @@ class QNACommunicationService : Service() {
             } catch (_: JSONException) {
                 ""
             }
+            Log.i(TAG, "Events count for |$event|: ${callbacks[event]?.size}. Data is: $jsonData")
             callbacks[event]?.forEach(Consumer { consumer -> consumer.accept(jsonData) })
         }
 
@@ -116,7 +117,7 @@ class QNACommunicationService : Service() {
 
                     // Read indication
                     val data = intent.getByteArrayExtra(BLEService.GATT_INTENT_DATA) ?: return
-                    Log.i(TAG, String(data, Charsets.UTF_8))
+                    Log.i(TAG, "Notify: ${String(data, Charsets.UTF_8)}")
 
                     // Read the characteristic in chunks
                     Log.i(TAG, "Read chunk: " + gatt.readCharacteristic(characteristic))

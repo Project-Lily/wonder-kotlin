@@ -36,8 +36,7 @@ class MainActivity : ComponentActivity() {
     private var qnaCommunicationService: QNACommunicationService? = null
 
     private fun testCallback(data: JSONObject) {
-        Log.i("Service Test", "Got data ${data.getJSONObject("data")}")
-        qnaCommunicationService?.sendQuestion("Send question works! ${data.getJSONObject("data")}")
+        Log.i("Service Test", "Got data ${data.getString("data")}")
     }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {

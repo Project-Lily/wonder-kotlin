@@ -48,7 +48,7 @@ fun SendToDeviceScreen(
 
     fun receiveAnswer(data: JSONObject) {
         Log.d("yabe", data.getString("data"))
-        Log.i("Service Test", "Got answer ${data.getJSONObject("data")}")
+        Log.i("Service Test", "Got answer ${data.getString("data")}")
     }
 
     val btIntentFilter = IntentFilter().apply {
