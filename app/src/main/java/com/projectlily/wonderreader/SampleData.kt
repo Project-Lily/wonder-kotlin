@@ -1,5 +1,6 @@
 package com.projectlily.wonderreader
 
+import com.projectlily.wonderreader.types.FolderClass
 import com.projectlily.wonderreader.types.QnA
 
 
@@ -45,5 +46,11 @@ object SampleData {
             question = "Sample 10",
             answer = "Insane nice sample"
         ),
+    )
+    val folders = listOf(
+        FolderClass("Math"),
+        FolderClass("Language"),
+        FolderClass("Science"),
+        FolderClass("Social Science")
     )
 }

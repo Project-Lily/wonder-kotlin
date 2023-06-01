@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.projectlily.wonderreader.services.QnaService
 import com.projectlily.wonderreader.ui.theme.WonderReaderTheme
 
 class QnAState {
@@ -48,8 +49,14 @@ fun QnAForm() {
         onChange = { formState.answer = it }
     )
     Spacer(Modifier.height(24.dp))
+
+    if (formState.category == "Social Science") {
+        formState.category = "SocialScience"
+    }
+
     SendFormButton(
         onValidate = {
+            QnaService.addQuestionAndAnswer(formState.question, formState.answer, formState.category)
             Toast.makeText(
                 context,
                 "Category: ${formState.category}\nQuestion: ${formState.question} | Answer: ${formState.answer}",

@@ -11,15 +11,15 @@ import androidx.navigation.navigation
 import com.projectlily.wonderreader.ui.components.ActionButton
 import com.projectlily.wonderreader.ui.components.BottomNavBar
 import com.projectlily.wonderreader.ui.components.TopBar
-import com.projectlily.wonderreader.ui.screens.AddQnAScreen
 import com.projectlily.wonderreader.ui.screens.HomeScreen
+import com.projectlily.wonderreader.ui.screens.ProfileScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
 //    Not very dry but then again NavHost can't be nested so here we are
-    navigation(startDestination=Screen.Home.route, route="home_root") {
+    navigation(startDestination = Screen.Home.route, route = "home_root") {
         composable(Screen.Home.route) {
             ScaffoldScreen(navController) {
-                HomeScreen(it)
+                HomeScreen(navController, it)
             }
         }
         composable(Screen.Debug.route) {
@@ -27,21 +27,24 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
                 DebugScreen(it)
             }
         }
-
+        composable(Screen.Profile.route) {
+            ScaffoldScreen(navController) {
+                ProfileScreen(navController, it)
+            }
+        }
         qnaNavGraph(navController)
     }
 }
 
 @Composable
 fun ScaffoldScreen(
-        navController: NavController,
-        content: @Composable (Modifier) -> Unit,
-
+    navController: NavController,
+    content: @Composable (Modifier) -> Unit
 ) {
     Scaffold(
-            topBar = { TopBar(navController, screenItems, navBarItems) },
-            floatingActionButton = { ActionButton(navController, screenItems) },
-            bottomBar = { BottomNavBar(navController, screenItems, navBarItems) }) { padding ->
+        topBar = { TopBar(navController, screenItems, navBarItems) },
+        floatingActionButton = { ActionButton(navController, screenItems) },
+        bottomBar = { BottomNavBar(navController, screenItems, navBarItems) }) { padding ->
         content(Modifier.padding(padding))
     }
 }
