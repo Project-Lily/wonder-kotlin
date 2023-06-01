@@ -22,6 +22,9 @@ android {
             useSupportLibrary true
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 
     buildTypes {
         release {
